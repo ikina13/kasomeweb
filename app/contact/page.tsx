@@ -1,44 +1,13 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { toast } from "sonner"
-import { Phone, Mail, MapPin, Facebook, Instagram, MessageCircle, Send, Clock } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Phone, Mail, MapPin, Facebook, Instagram, MessageCircle, Clock } from "lucide-react"
 import Logo from "@/components/Logo"
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    message: "",
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    toast.success("Message sent successfully! We'll get back to you soon.")
-    setFormData({ fullName: "", email: "", message: "" })
-    setIsSubmitting(false)
-  }
 
   const contactInfo = [
     {
@@ -71,22 +40,22 @@ export default function ContactPage() {
     {
       icon: Facebook,
       name: "Facebook",
-      url: "https://facebook.com/kasome",
+      url: "https://www.facebook.com/p/Kasomecom-100064024906154/",
       handle: "@kasome",
       color: "text-blue-600 hover:text-blue-700",
     },
     {
       icon: Instagram,
       name: "Instagram",
-      url: "https://instagram.com/kasome",
-      handle: "@kasome_tz",
+      url: "https://www.instagram.com/kasome_online/",
+      handle: "@kasome_online",
       color: "text-pink-600 hover:text-pink-700",
     },
     {
       icon: MessageCircle,
       name: "WhatsApp",
-      url: "https://wa.me/255123456789",
-      handle: "+255 123 456 789",
+      url: "https://wa.me/255749655855",
+      handle: "+255749655855",
       color: "text-green-600 hover:text-green-700",
     },
   ]
@@ -123,156 +92,64 @@ export default function ContactPage() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="py-16 text-center">
+      {/* Centered Contact Info */}
+      <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Contact Us</h1>
-          <p className="text-xl text-gray-600 leading-relaxed">
-            Get in touch with us. We're here to help you succeed in your learning journey.
-          </p>
-        </div>
-      </section>
+          <div className="space-y-8">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Get in Touch</h2>
+              <p className="text-lg text-gray-600 mb-8">
+                We're here to help! Reach out to us through any of the following channels.
+              </p>
+            </div>
 
-      {/* Contact Form and Info */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Contact Form */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-2xl text-gray-900">Send us a Message</CardTitle>
-                <CardDescription>
-                  Fill out the form below and we'll get back to you as soon as possible.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
-                      Full Name *
-                    </label>
-                    <Input
-                      id="fullName"
-                      name="fullName"
-                      type="text"
-                      required
-                      value={formData.fullName}
-                      onChange={handleInputChange}
-                      className="focus:ring-green-500 focus:border-green-500"
-                      placeholder="Enter your full name"
-                    />
-                  </div>
+            {/* Contact Info Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {contactInfo.map((info, index) => (
+                <Card key={index} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start space-x-4">
+                      <info.icon className={`h-6 w-6 mt-1 ${info.color}`} />
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">{info.title}</h3>
+                        {info.details.map((detail, idx) => (
+                          <p key={idx} className="text-gray-600 text-sm">
+                            {detail}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Email Address *
-                    </label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="focus:ring-green-500 focus:border-green-500"
-                      placeholder="Enter your email address"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                      Message *
-                    </label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      required
-                      rows={6}
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      className="focus:ring-green-500 focus:border-green-500"
-                      placeholder="Tell us how we can help you..."
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        Sending Message...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-4 w-4 mr-2" />
-                        Send Message
-                      </>
-                    )}
-                  </Button>
-                </form>
+            {/* Social Media */}
+            <Card className="bg-gradient-to-r from-green-600 to-green-700 text-white">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold mb-4">Follow Us</h3>
+                <p className="mb-6 opacity-90">
+                  Stay connected with us on social media for updates and educational content.
+                </p>
+                <div className="space-y-4">
+                  {socialLinks.map((social, index) => (
+                    <a
+                      key={index}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center space-x-3 text-white hover:text-yellow-300 transition-colors"
+                    >
+                      <social.icon className="h-5 w-5" />
+                      <div>
+                        <span className="font-medium">{social.name}</span>
+                        <span className="text-sm opacity-75 ml-2">{social.handle}</span>
+                      </div>
+                    </a>
+                  ))}
+                </div>
               </CardContent>
             </Card>
-
-            {/* Contact Information */}
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Get in Touch</h2>
-                <p className="text-gray-600 mb-8">
-                  We're here to help! Reach out to us through any of the following channels.
-                </p>
-              </div>
-
-              {/* Contact Info Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {contactInfo.map((info, index) => (
-                  <Card key={index} className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="flex items-start space-x-4">
-                        <info.icon className={`h-6 w-6 mt-1 ${info.color}`} />
-                        <div>
-                          <h3 className="font-semibold text-gray-900 mb-2">{info.title}</h3>
-                          {info.details.map((detail, idx) => (
-                            <p key={idx} className="text-gray-600 text-sm">
-                              {detail}
-                            </p>
-                          ))}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              {/* Social Media */}
-              <Card className="bg-gradient-to-r from-green-600 to-green-700 text-white">
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-4">Follow Us</h3>
-                  <p className="mb-6 opacity-90">
-                    Stay connected with us on social media for updates and educational content.
-                  </p>
-                  <div className="space-y-4">
-                    {socialLinks.map((social, index) => (
-                      <a
-                        key={index}
-                        href={social.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center space-x-3 text-white hover:text-yellow-300 transition-colors"
-                      >
-                        <social.icon className="h-5 w-5" />
-                        <div>
-                          <span className="font-medium">{social.name}</span>
-                          <span className="text-sm opacity-75 ml-2">{social.handle}</span>
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
           </div>
         </div>
       </section>
@@ -334,51 +211,23 @@ export default function ContactPage() {
             <div>
               <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
               <ul className="space-y-2">
-                <li>
-                  <Link href="/" className="text-gray-400 hover:text-white">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about" className="text-gray-400 hover:text-white">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact" className="text-gray-400 hover:text-white">
-                    Contact
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/login" className="text-gray-400 hover:text-white">
-                    Login
-                  </Link>
-                </li>
+                <li><Link href="/" className="text-gray-400 hover:text-white">Home</Link></li>
+                <li><Link href="/about" className="text-gray-400 hover:text-white">About</Link></li>
+                <li><Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link></li>
+                <li><Link href="/login" className="text-gray-400 hover:text-white">Login</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Support</h3>
               <ul className="space-y-2">
-                <li>
-                  <Link href="/help" className="text-gray-400 hover:text-white">
-                    Help Center
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy" className="text-gray-400 hover:text-white">
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms" className="text-gray-400 hover:text-white">
-                    Terms of Service
-                  </Link>
-                </li>
+                <li><Link href="/help" className="text-gray-400 hover:text-white">Help Center</Link></li>
+                <li><Link href="/privacy" className="text-gray-400 hover:text-white">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="text-gray-400 hover:text-white">Terms of Service</Link></li>
               </ul>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-            <p className="text-gray-400">© 2024 Kasome. All rights reserved.</p>
+            <p className="text-gray-400">© 2025 Kasome. All rights reserved.</p>
           </div>
         </div>
       </footer>

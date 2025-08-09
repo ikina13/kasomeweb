@@ -84,7 +84,9 @@ export default function CoursePage({ params }: { params: { id: string } }) {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`http://45.79.205.240/api/users/courses/${courseId}`);
+        const token = localStorage.getItem("auth_token");
+    if (!token) { setError("Authentication required."); setPageLoading(false); return; }
+        const response = await fetch(`http://45.79.205.240/api/users/courses/${courseId}`,{ headers: { 'Authorization': `Bearer ${token}` } });
 
         if (!response.ok) {
           const errorBody = await response.json();

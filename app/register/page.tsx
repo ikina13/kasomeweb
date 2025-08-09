@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import Logo from "@/components/Logo";
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // +++ DATA
@@ -94,8 +95,8 @@ export default function RegisterPage() {
       <div className="w-full max-w-2xl">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center space-x-2">
-            <BookOpen className="h-10 w-10 text-green-600" />
-            <span className="text-3xl font-bold text-gray-900">Kasome</span>
+             <Logo />
+             
           </Link>
           <p className="text-gray-600 mt-2">Join thousands of students learning with Kasome</p>
         </div>

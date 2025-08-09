@@ -13,13 +13,13 @@ export default function AboutPage() {
   ]
 
   const partners = [
-    { name: "Tanzania Coat of Arms", logo: "/placeholder.svg?height=60&width=60&text=TZ" },
-    { name: "Ministry of Education", logo: "/placeholder.svg?height=60&width=60&text=MOE" },
-    { name: "UKaid", logo: "/placeholder.svg?height=60&width=60&text=UKaid" },
-    { name: "Ford Foundation", logo: "/placeholder.svg?height=60&width=60&text=Ford" },
-    { name: "USAID", logo: "/placeholder.svg?height=60&width=60&text=USAID" },
-    { name: "Plus TV", logo: "/placeholder.svg?height=60&width=60&text=Plus" },
-    { name: "Zuku", logo: "/placeholder.svg?height=60&width=60&text=Zuku" },
+   // { name: "Tanzania Coat of Arms", logo: "/placeholder.svg?height=60&width=60&text=TZ" },
+    { name: "Ministry of Education", logo: "/images/partner1.png" },
+    { name: "UKaid", logo: "/images/partner2.png" },
+    { name: "Ford Foundation", logo: "/images/partner3.png" },
+    { name: "USAID", logo: "/images/partner4.png" },
+ //   { name: "Plus TV", logo: "/placeholder.svg?height=60&width=60&text=Plus" },
+    { name: "Zuku", logo: "/images/partner5.png" },
   ]
 
   return (
@@ -89,7 +89,7 @@ export default function AboutPage() {
             </div>
             <div className="relative">
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-07-30%20at%2015.15.48-k2Bi0ClbuANwQBhBlrYUXHVaj4MoR0.png"
+                src="/images/about1.jpg"
                 alt="Kasome team members"
                 className="rounded-lg shadow-lg w-full h-auto"
               />
@@ -104,7 +104,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="relative">
               <img
-                src="/placeholder.svg?height=400&width=500&text=Award+Ceremony"
+                src="/images/about2.jpg"
                 alt="Total Startupper Awards 2019"
                 className="rounded-lg shadow-lg w-full h-auto"
               />
@@ -141,7 +141,7 @@ export default function AboutPage() {
             </div>
             <div className="relative">
               <img
-                src="/placeholder.svg?height=400&width=500&text=Mathematics+Teaching"
+                 src="/images/about3.jpg"
                 alt="Teacher working with mathematical equations"
                 className="rounded-lg shadow-lg w-full h-auto"
               />
@@ -218,7 +218,7 @@ export default function AboutPage() {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Trusted Partners</h2>
             <p className="text-xl text-gray-600">Working together to transform education</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8 items-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 items-center">
             {partners.map((partner, index) => (
               <div key={index} className="flex justify-center">
                 <img
