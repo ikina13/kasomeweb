@@ -1,19 +1,117 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { BookOpen, Users, Award, TrendingUp, Star, ArrowRight, Play, CheckCircle, Briefcase, Lightbulb, PieChart, PlaySquare, BookCopy, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { BookOpen, Users, Award, TrendingUp, Star, ArrowRight, Briefcase, Lightbulb, PieChart, PlaySquare, BookCopy, X, ChevronLeft, ChevronRight } from "lucide-react";
 import Logo from "@/components/Logo";
 import CoursesGrid from "@/components/CoursesGrid";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+// Import for particles
+import Particles from "react-tsparticles";
+import type { Engine } from "tsparticles-engine";
+import { loadFull } from "tsparticles";
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// +++ PARTICLES COMPONENT (CORRECTED TO STAY IN HERO SECTION)
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function ParticlesComponent() {
+  const particlesInit = useCallback(async (engine: Engine) => {
+    await loadFull(engine);
+  }, []);
+
+  const particlesOptions = {
+    // This is the key setting to keep particles inside their container
+    fullScreen: {
+      enable: false, // This is the most important line
+    },
+    style: {
+      position: "absolute" as const, // This reinforces the positioning
+      width: "100%",
+      height: "100%",
+    },
+    background: {
+      color: {
+        value: "transparent",
+      },
+    },
+    fpsLimit: 120,
+    interactivity: {
+      events: {
+        onHover: {
+          enable: true,
+          mode: "repulse",
+        },
+        resize: true,
+      },
+      modes: {
+        repulse: {
+          distance: 100,
+          duration: 0.4,
+        },
+      },
+    },
+    particles: {
+      color: {
+        value: "#16a34a", // green-600
+      },
+      links: {
+        color: "#22c55e", // green-500
+        distance: 150,
+        enable: true,
+        opacity: 0.5,
+        width: 1,
+      },
+      collisions: {
+        enable: true,
+      },
+      move: {
+        direction: "none" as const,
+        enable: true,
+        outModes: {
+          default: "bounce" as const,
+        },
+        random: false,
+        speed: 1,
+        straight: false,
+      },
+      number: {
+        density: {
+          enable: true,
+          area: 800,
+        },
+        value: 80,
+      },
+      opacity: {
+        value: 0.5,
+      },
+      shape: {
+        type: "circle" as const,
+      },
+      size: {
+        value: { min: 1, max: 5 },
+      },
+    },
+    detectRetina: true,
+  };
+
+  return (
+    <Particles
+      id="tsparticles"
+      // @ts-ignore
+      options={particlesOptions}
+      init={particlesInit}
+    />
+  );
+}
+
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // +++ REUSABLE COMPONENTS
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 interface NewHeroProps {
   studentImageUrl: string;
   onFreeTrialClick: () => void;
@@ -23,6 +121,10 @@ const subjects = [
     { name: "Secondary & High school courses", students: "2,300+", rating: 4.7, color: "bg-emerald-500" },
     { name: "English Courses", students: "3,200+", rating: 4.8, color: "bg-orange-500" },
     { name: "Kiswahili Courses", students: "2,800+", rating: 4.9, color: "bg-red-500" },
+]
+
+const partners = [
+    { name: "Ministry of Education", logo: "/images/partner1.png" }, { name: "UKaid", logo: "/images/partner2.png" }, { name: "Ford Foundation", logo: "/images/partner3.png" }, { name: "USAID", logo: "/images/partner4.png" }, { name: "Zuku", logo: "/images/partner5.png" },
 ]
 
 const StatCard = ({ icon, value, label }: { icon: React.ReactNode, value: string, label: string }) => (
@@ -39,8 +141,16 @@ const StatCard = ({ icon, value, label }: { icon: React.ReactNode, value: string
 
 function NewHero({ studentImageUrl, onFreeTrialClick }: NewHeroProps) {
   return (
-    <section className="w-full bg-gray-50 overflow-hidden">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24">
+    // `relative` contains the absolutely positioned particles
+    <section className="relative w-full bg-gray-50 overflow-hidden">
+      
+      {/* Particles Component placed in the background layer */}
+      <div className="absolute inset-0 z-0">
+        <ParticlesComponent />
+      </div>
+
+      {/* Hero content sits on a higher layer to appear on top */}
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="text-center lg:text-left">
             <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-6">
@@ -69,8 +179,8 @@ function NewHero({ studentImageUrl, onFreeTrialClick }: NewHeroProps) {
               <Image src={studentImageUrl} alt="Student with books" width={250} height={250} className="object-contain drop-shadow-2xl z-10" priority />
             </div>
             <div className="absolute top-8 left-0 z-20 animate-fade-in-up"><StatCard icon={<PieChart className="h-8 w-8 text-green-600"/>} value="5K+" label="Online Courses"/></div>
-            <div className="absolute top-1/3 right-0 z-20 animate-fade-in-up" style={{ animationDelay: '0.2s' }}><StatCard icon={<PlaySquare className="h-8 w-8 text-blue-600"/>} value="2K+" label="Video Courses"/></div>
-            <div className="absolute bottom-8 left-1/4 z-20 animate-fade-in-up" style={{ animationDelay: '0.4s' }}><StatCard icon={<BookCopy className="h-8 w-8 text-purple-600"/>} value="250+" label="Tutors"/></div>
+            <div className="absolute top-1/3 right-0 z-20 animate-fade-in-up" style={{ animationDelay: '0.2s' }}><StatCard icon={<PlaySquare className="h-8 w-8 text-green-600"/>} value="2K+" label="Video Courses"/></div>
+            <div className="absolute bottom-8 left-1/4 z-20 animate-fade-in-up" style={{ animationDelay: '0.4s' }}><StatCard icon={<BookCopy className="h-8 w-8 text-green-600"/>} value="250+" label="Tutors"/></div>
           </div>
         </div>
       </div>
@@ -78,19 +188,13 @@ function NewHero({ studentImageUrl, onFreeTrialClick }: NewHeroProps) {
   );
 }
 
-// --- UPDATED SLIDESHOW COMPONENT ---
 function StudentSlideshow() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const studentImages = [
-    { src: "/images/students/student-1.jpg", name: "Amina Yusuf" },
-    { src: "/images/students/student-2.jpg", name: "John Meli" },
-    { src: "/images/students/student-3.jpg", name: "Grace Kimaro" },
-    { src: "/images/students/student-4.jpg", name: "David Mwanri" },
-    { src: "/images/students/student-5.jpg", name: "Sarah Connor" },
-    { src: "/images/students/student-6.jpg", name: "Mike Ross" },
+    { src: "/images/students/student-1.jpg", name: "Amina Yusuf" }, { src: "/images/students/student-2.jpg", name: "John Meli" }, { src: "/images/students/student-3.jpg", name: "Grace Kimaro" }, { src: "/images/students/student-4.jpg", name: "David Mwanri" }, { src: "/images/students/student-5.jpg", name: "Sarah Connor" }, { src: "/images/students/student-6.jpg", name: "Mike Ross" },
   ];
 
   const resetTimeout = () => {
@@ -104,12 +208,12 @@ function StudentSlideshow() {
     timeoutRef.current = setTimeout(
       () => setCurrentIndex((prevIndex) =>
           prevIndex === studentImages.length - 1 ? 0 : prevIndex + 1
-      ), 3000 // Change slide every 1 second
+      ), 3000
     );
     return () => {
       resetTimeout();
     };
-  }, [currentIndex]);
+  }, [currentIndex, studentImages.length]);
 
   const goToPrevious = () => {
     const isFirstSlide = currentIndex === 0;
@@ -136,31 +240,20 @@ function StudentSlideshow() {
           </p>
         </div>
         
-        <div 
-            className="w-full"
-            onMouseEnter={() => resetTimeout()}
-            onMouseLeave={() => {
-                 timeoutRef.current = setTimeout(
-                    () => setCurrentIndex((prevIndex) =>
-                        prevIndex === studentImages.length - 1 ? 0 : prevIndex + 1
-                    ), 1000
-                );
-            }}
+        <div
+          className="w-full"
+          onMouseEnter={resetTimeout}
+          onMouseLeave={() => {
+              timeoutRef.current = setTimeout(() => 
+                setCurrentIndex((prev) => prev === studentImages.length - 1 ? 0 : prev + 1), 
+              3000);
+          }}
         >
             <div className="relative group">
                 <div className="relative h-96 md:h-[600px] w-full overflow-hidden rounded-lg shadow-2xl cursor-pointer" onClick={() => handleImageClick(studentImages[currentIndex].src)}>
                     {studentImages.map((image, index) => (
-                        <div
-                            key={index}
-                            className="absolute top-0 left-0 w-full h-full transition-transform duration-1000 ease-in-out"
-                            style={{ transform: `translateX(${(index - currentIndex) * 100}%)` }}
-                        >
-                            <Image 
-                                src={image.src} 
-                                alt={image.name}
-                                layout="fill"
-                                objectFit="cover"
-                            />
+                        <div key={index} className="absolute top-0 left-0 w-full h-full transition-transform duration-1000 ease-in-out" style={{ transform: `translateX(${(index - currentIndex) * 100}%)` }}>
+                            <Image src={image.src} alt={image.name} layout="fill" objectFit="cover" />
                         </div>
                     ))}
                 </div>
@@ -171,16 +264,11 @@ function StudentSlideshow() {
       </div>
 
       {selectedImage && (
-        <div 
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 animate-fade-in"
-          onClick={handleCloseModal}
-        >
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 animate-fade-in" onClick={handleCloseModal}>
           <div className="relative max-w-4xl max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
             <Image src={selectedImage} alt="Zoomed student view" width={1000} height={1200} className="object-contain max-h-[90vh] rounded-lg shadow-2xl"/>
           </div>
-          <Button variant="ghost" size="icon" className="absolute top-4 right-4 text-white hover:text-white hover:bg-white/20" onClick={handleCloseModal}>
-            <X className="h-8 w-8"/>
-          </Button>
+          <Button variant="ghost" size="icon" className="absolute top-4 right-4 text-white hover:text-white hover:bg-white/20" onClick={handleCloseModal}><X className="h-8 w-8"/></Button>
         </div>
       )}
     </section>
@@ -229,14 +317,13 @@ export default function HomePage() {
           <div className="flex justify-between items-center h-16">
             <Logo />
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="/courses" className="text-gray-600 hover:text-gray-900">Courses</Link>
               <Link href="/about" className="text-gray-600 hover:text-gray-900">About</Link>
               <Link href="/contact" className="text-gray-600 hover:text-gray-900">Contact</Link>
             </div>
             <div className="flex items-center space-x-4">
               {isLoggedIn ? (
                 <>
-                  {user && (<Avatar><AvatarImage src={user.photo_url || "/placeholder.svg"} alt={user.name} /><AvatarFallback>{user.name?.split(' ').map(n => n[0]).join('') || 'JD'}</AvatarFallback></Avatar>)}
+                  {user && (<Avatar><AvatarImage src={user.photo_url || "/placeholder-user.jpg"} alt={user.name} /><AvatarFallback>{user.name?.split(' ').map(n => n[0]).join('') || 'JD'}</AvatarFallback></Avatar>)}
                   <Button asChild className="bg-green-600 hover:bg-green-700 text-white"><Link href="/dashboard">Go to Dashboard</Link></Button>
                 </>
               ) : (
@@ -321,7 +408,6 @@ export default function HomePage() {
         </div>
       </section>
       
-      {/* *** NEW STUDENT SLIDESHOW SECTION ADDED HERE *** */}
       <StudentSlideshow />
       
       {/* Testimonials Section */}
@@ -332,21 +418,26 @@ export default function HomePage() {
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">Hear from thousands of students who have transformed their careers.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="p-6">
-              <div className="flex items-center mb-4">{[...Array(5)].map((_, i) => (<Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />))}</div>
-              <p className="text-gray-600 mb-4">"Kasome helped me master advanced mathematics. The instructors are amazing and the content is top-notch!"</p>
-              <div className="flex items-center"><div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div><div><div className="font-semibold">Amina Juma</div><div className="text-sm text-gray-500">Form 6 Student</div></div></div>
-            </Card>
-            <Card className="p-6">
-              <div className="flex items-center mb-4">{[...Array(5)].map((_, i) => (<Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />))}</div>
-              <p className="text-gray-600 mb-4">"The computer science course gave me the skills I needed to land my dream job. Highly recommended!"</p>
-              <div className="flex items-center"><div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div><div><div className="font-semibold">John Mwalimu</div><div className="text-sm text-gray-500">Software Developer</div></div></div>
-            </Card>
-            <Card className="p-6">
-              <div className="flex items-center mb-4">{[...Array(5)].map((_, i) => (<Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />))}</div>
-              <p className="text-gray-600 mb-4">"Excellent platform with great courses. The certificates helped me advance in my career."</p>
-              <div className="flex items-center"><div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div><div><div className="font-semibold">Grace Kimaro</div><div className="text-sm text-gray-500">Teacher</div></div></div>
-            </Card>
+            <Card className="p-6"><div className="flex items-center mb-4">{[...Array(5)].map((_, i) => (<Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />))}</div><p className="text-gray-600 mb-4">"Kasome helped me master advanced mathematics. The instructors are amazing and the content is top-notch!"</p><div className="flex items-center"><div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div><div><div className="font-semibold">Amina Juma</div><div className="text-sm text-gray-500">Form 6 Student</div></div></div></Card>
+            <Card className="p-6"><div className="flex items-center mb-4">{[...Array(5)].map((_, i) => (<Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />))}</div><p className="text-gray-600 mb-4">"The computer science course gave me the skills I needed to land my dream job. Highly recommended!"</p><div className="flex items-center"><div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div><div><div className="font-semibold">John Mwalimu</div><div className="text-sm text-gray-500">Software Developer</div></div></div></Card>
+            <Card className="p-6"><div className="flex items-center mb-4">{[...Array(5)].map((_, i) => (<Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />))}</div><p className="text-gray-600 mb-4">"Excellent platform with great courses. The certificates helped me advance in my career."</p><div className="flex items-center"><div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div><div><div className="font-semibold">Grace Kimaro</div><div className="text-sm text-gray-500">Teacher</div></div></div></Card>
+          </div>
+        </div>
+      </section>
+
+       {/* Trusted Partners */}
+      <section className="py-16 bg-green-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Trusted Partners</h2>
+            <p className="text-xl text-gray-600">Working together to transform education</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 items-center">
+            {partners.map((partner, index) => (
+              <div key={index} className="flex justify-center">
+                <img src={partner.logo || "/placeholder.svg"} alt={partner.name} className="h-12 w-auto hover:opacity-100 transition-opacity" />
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -355,14 +446,12 @@ export default function HomePage() {
       <footer className="bg-gray-800 text-white py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div><Logo /><p className="text-gray-400 mt-4">Empowering students across Tanzania with quality online education.</p></div>
-            <div><h3 className="text-lg font-semibold mb-4">Courses</h3><ul className="space-y-2 text-gray-400"><li><Link href="/courses/mathematics">Mathematics</Link></li><li><Link href="/courses/science">Science</Link></li><li><Link href="/courses/languages">Languages</Link></li><li><Link href="/courses/technology">Technology</Link></li></ul></div>
-            <div><h3 className="text-lg font-semibold mb-4">Support</h3><ul className="space-y-2 text-gray-400"><li><Link href="/help">Help Center</Link></li><li><Link href="/contact">Contact Us</Link></li><li><Link href="/faq">FAQ</Link></li><li><Link href="/community">Community</Link></li></ul></div>
-            <div><h3 className="text-lg font-semibold mb-4">Company</h3><ul className="space-y-2 text-gray-400"><li><Link href="/about">About Us</Link></li><li><Link href="/careers">Careers</Link></li><li><Link href="/privacy">Privacy Policy</Link></li><li><Link href="/terms">Terms of Service</Link></li></ul></div>
+            <div><Link href="/" className="flex items-center space-x-2"><div className="w-10 h-10 bg-green-0 rounded-lg flex items-center justify-center"><img src="/images/kasomelogo.svg" alt="Kasome Logo" /></div><span className="text-2xl font-bold text-white">Kasome</span></Link><p className="text-gray-400 mt-4">Empowering students across Tanzania with quality online education.</p></div>
+            <div><h3 className="text-lg font-semibold mb-4">Courses</h3><ul className="space-y-2 text-gray-400"><li><Link href="/">Mathematics</Link></li><li><Link href="/courses/science">Science</Link></li><li><Link href="/">Languages</Link></li><li><Link href="/">Technology</Link></li></ul></div>
+            <div><h3 className="text-lg font-semibold mb-4">Support</h3><ul className="space-y-2 text-gray-400"><li><Link href="/contact">Help Center</Link></li><li><Link href="/contact">Contact Us</Link></li><li><Link href="/">FAQ</Link></li><li><Link href="/">Community</Link></li></ul></div>
+            <div><h3 className="text-lg font-semibold mb-4">Company</h3><ul className="space-y-2 text-gray-400"><li><Link href="/about">About Us</Link></li><li><Link href="/">Careers</Link></li><li><Link href="/privacy">Privacy Policy</Link></li><li><Link href="/">Terms of Service</Link></li></ul></div>
           </div>
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; {new Date().getFullYear()} Kasome. All rights reserved.</p>
-          </div>
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400"><p>&copy; {new Date().getFullYear()} Kasome. All rights reserved.</p></div>
         </div>
       </footer>
     </div>

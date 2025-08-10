@@ -73,7 +73,9 @@ export default function DashboardPage() {
   useEffect(() => {
     const token = localStorage.getItem("auth_token")
     if (!token) { router.push("/login"); return; }
-    setUser({ name: "John Doe", avatar: "/placeholder.svg" })
+    const userDataString = localStorage.getItem('user_data');
+    const userData = JSON.parse(userDataString);
+    setUser({ name: userData.name, avatar: "/placeholder-user.jpg" })
     fetchInitialCourses();
     fetchMyCourses();
   }, [router])
@@ -339,7 +341,7 @@ export default function DashboardPage() {
                 <>
                   <Avatar><AvatarImage src={user.avatar} alt={user.name} /><AvatarFallback>{user.name?.split(" ").map((n: string) => n[0]).join("")}</AvatarFallback></Avatar>
                   <span className="hidden md:block text-sm font-medium">{user.name}</span>
-                  <Button variant="ghost" size="sm"><Settings className="h-4 w-4" /></Button>
+                  
                   <Button variant="ghost" size="sm" onClick={handleLogout}><LogOut className="h-4 w-4" /></Button>
                 </>
               )}

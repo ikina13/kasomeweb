@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import Logo from "@/components/Logo"
 
 // Define a type for the user profile data based on your API response
 interface UserProfile {
@@ -143,8 +144,7 @@ export default function ProfilePage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link href="/" className="flex items-center space-x-2">
-                <BookOpen className="h-8 w-8 text-green-600" />
-                <span className="text-2xl font-bold text-gray-900">Kasome</span>
+                <Logo />
               </Link>
             </div>
             <nav className="hidden md:flex space-x-8">
@@ -152,7 +152,7 @@ export default function ProfilePage() {
               <Link href="/profile" className="text-green-600 font-medium border-b-2 border-green-600">Profile</Link>
             </nav>
             <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="icon"><Settings className="h-5 w-5" /></Button>
+             
               <Button variant="ghost" size="icon" onClick={handleLogout}><LogOut className="h-5 w-5" /></Button>
             </div>
           </div>

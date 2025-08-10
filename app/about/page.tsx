@@ -224,7 +224,7 @@ export default function AboutPage() {
                 <img
                   src={partner.logo || "/placeholder.svg"}
                   alt={partner.name}
-                  className="h-12 w-auto opacity-60 hover:opacity-100 transition-opacity"
+                  className="h-12 w-auto   hover:opacity-100 transition-opacity"
                 />
               </div>
             ))}
@@ -297,17 +297,17 @@ export default function AboutPage() {
               <h3 className="text-lg font-semibold mb-4">Support</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/help" className="text-gray-400 hover:text-white">
+                  <Link href="/contact" className="text-gray-400 hover:text-white">
                     Help Center
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy" className="text-gray-400 hover:text-white">
+                  <Link href="/" className="text-gray-400 hover:text-white">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms" className="text-gray-400 hover:text-white">
+                  <Link href="/" className="text-gray-400 hover:text-white">
                     Terms of Service
                   </Link>
                 </li>

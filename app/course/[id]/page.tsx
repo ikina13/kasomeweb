@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
@@ -8,9 +8,8 @@ import { ArrowLeft, Play, Lock, CheckCircle, Users, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { toast } from "sonner" // Assuming sonner is set up
+import { toast } from "sonner"
 
-// --- Interfaces (unchanged) ---
 interface VideoClip {
   id: number;
   name: string;
@@ -66,6 +65,7 @@ interface BackendPaymentTokenResponse {
 export default function CoursePage({ params }: { params: { id: string } }) {
   const courseId = params.id;
   const router = useRouter();
+  const videoPlayerRef = useRef<HTMLDivElement>(null);
 
   const [course, setCourse] = useState<FetchedCourse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -85,8 +85,15 @@ export default function CoursePage({ params }: { params: { id: string } }) {
       setError(null);
       try {
         const token = localStorage.getItem("auth_token");
-    if (!token) { setError("Authentication required."); setPageLoading(false); return; }
-        const response = await fetch(`http://45.79.205.240/api/users/courses/${courseId}`,{ headers: { 'Authorization': `Bearer ${token}` } });
+        if (!token) {
+          setError("Authentication required.");
+          setLoading(false);
+          return;
+        }
+        
+        const response = await fetch(`http://45.79.205.240/api/users/courses/${courseId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
 
         if (!response.ok) {
           const errorBody = await response.json();
@@ -98,41 +105,28 @@ export default function CoursePage({ params }: { params: { id: string } }) {
         if (apiResponse.status === "SUCCESS" && apiResponse.data && apiResponse.data.length > 0) {
           const fetchedCourse = apiResponse.data[0];
 
-          // --- Sorting Logic: Natural sort based on "Qn.X" number ---
-          const sortedVideoClips = [...fetchedCourse.practicle_video_clips].sort((a, b) => {
-            const regex = /Qn\.(\d+)/;
-            const matchA = a.name.match(regex);
-            const matchB = b.name.match(regex);
+          // Update video payment_status based on course payment status
+          if (fetchedCourse.payment?.status === "settled") {
+            fetchedCourse.practicle_video_clips = fetchedCourse.practicle_video_clips.map(video => {
+              if (video.payment_status === "buy") {
+                return { ...video, payment_status: "paid" };
+              }
+              return video;
+            });
+          }
 
-            let numA = Infinity;
-            if (matchA && matchA[1]) {
-              numA = parseInt(matchA[1], 10);
-            }
-
-            let numB = Infinity;
-            if (matchB && matchB[1]) {
-              numB = parseInt(matchB[1], 10);
-            }
-
-            if (numA !== Infinity && numB !== Infinity) {
-              return numA - numB;
-            }
-            if (numA !== Infinity) return -1;
-            if (numB !== Infinity) return 1;
-
-            return a.name.localeCompare(b.name);
-          });
+          // NEW: Sort videos by ID in ascending order
+          const sortedVideoClips = [...fetchedCourse.practicle_video_clips].sort((a, b) => a.id - b.id);
           fetchedCourse.practicle_video_clips = sortedVideoClips;
-          // --- End Sorting Logic ---
 
           setCourse(fetchedCourse);
 
-          // Find the first free video to set as default (from the now sorted list)
+          // Find the first free video to set as default
           let defaultVideo: VideoClip | null = null;
           if (fetchedCourse.practicle_video_clips && fetchedCourse.practicle_video_clips.length > 0) {
             defaultVideo = fetchedCourse.practicle_video_clips.find(
-              (video) => video.payment_status === "free"
-            ) || fetchedCourse.practicle_video_clips[0]; // Fallback to first video if no free ones
+              (video) => video.payment_status === "free" || video.payment_status === "paid"
+            ) || fetchedCourse.practicle_video_clips[0];
           }
           setSelectedVideo(defaultVideo);
 
@@ -156,16 +150,24 @@ export default function CoursePage({ params }: { params: { id: string } }) {
 
   const handleVideoClick = (video: VideoClip) => {
     setSelectedVideo(video);
-    setShowPaymentModal(false);
-
+    
     if (video.payment_status === "buy") {
       setShowPaymentModal(true);
     } else {
-      // Free video, simply play
+      setShowPaymentModal(false);
     }
+
+    // NEW: Scroll to video player
+    setTimeout(() => {
+      if (videoPlayerRef.current) {
+        videoPlayerRef.current.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }, 100);
   };
 
-  // --- handleProceedToPay function (UNCOMMENTED) ---
   const handleProceedToPay = async () => {
     if (!selectedVideo || !course) {
       toast.error("Course or video not fully loaded for payment.");
@@ -181,21 +183,20 @@ export default function CoursePage({ params }: { params: { id: string } }) {
         return;
     }
 
-    setShowPaymentModal(false); // Close modal immediately
+    setShowPaymentModal(false);
     toast.info("Preparing payment, please wait...", { duration: 5000 });
 
-    // --- UNCOMMENTED CODE BLOCK ---
     try {
-        const response = await fetch('http://45.79.205.240/api/users/payment/token', { // Correct URL: no 'i' at the end
+        const response = await fetch('http://45.79.205.240/api/users/payment/token', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${authToken}`,
             },
             body: JSON.stringify({
-                video_id: course.id, // Sending Course ID
-                amount: course.price, // Sending Course Price
-                request_from_portal: true, // Sending portal flag
+                video_id: course.id,
+                amount: course.price,
+                request_from_portal: true,
             }),
         });
 
@@ -213,9 +214,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
         toast.error(`Payment initiation failed: ${error.message || "Network error"}`);
         console.error("Error during call to backend payment token API:", error);
     }
-    // --- END UNCOMMENTED CODE BLOCK ---
   };
-  // --- END handleProceedToPay function ---
 
   if (loading) {
     return (
@@ -276,11 +275,11 @@ export default function CoursePage({ params }: { params: { id: string } }) {
         <div className="space-y-8">
           {/* Video Player and Course Info */}
           <div className="space-y-6">
-            {/* Video Player */}
-            <Card className="overflow-hidden">
+            {/* Video Player - Added ref for scrolling */}
+            <Card className="overflow-hidden" ref={videoPlayerRef}>
               <div className="relative bg-black aspect-video">
                 {selectedVideo ? (
-                  selectedVideo.payment_status === "free" ? (
+                  (selectedVideo.payment_status === "free" || selectedVideo.payment_status === "paid") ? (
                     <iframe
                       key={selectedVideo.id}
                       src={`https://player.vdocipher.com/v2/?otp=${selectedVideo.otp}&playbackInfo=${selectedVideo.playbackInfo}&autoplay=1`}
@@ -394,7 +393,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
                             }}
                           />
                           <div className="absolute inset-0 flex items-center justify-center">
-                            {video.payment_status === "free" ? (
+                            {(video.payment_status === "free" || video.payment_status === "paid") ? (
                               <Play className="h-6 w-6 text-blue-500 bg-white rounded-full p-1" />
                             ) : (
                               <Lock className="h-6 w-6 text-gray-400 bg-white rounded-full p-1" />
@@ -429,11 +428,19 @@ export default function CoursePage({ params }: { params: { id: string } }) {
                               Buy
                             </Badge>
                           )}
+                          {video.payment_status === "paid" && (
+                            <Badge
+                              variant="outline"
+                              className="text-xs bg-red-50 text-red-700 border-red-200 flex-shrink-0 ml-2"
+                            >
+                              Paid
+                            </Badge>
+                          )}
                         </div>
 
                         <div className="flex items-center justify-between">
                           {video.payment_status === "buy" && (
-                            <span className="text-xs font-medium text-yellow-600">TSh {selectedVideo.price.toLocaleString()}</span>
+                            <span className="text-xs font-medium text-yellow-600">TSh {video.price.toLocaleString()}</span>
                           )}
                         </div>
                       </div>
@@ -448,7 +455,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-     {/* Payment Modal */}
+      {/* Payment Modal */}
       {showPaymentModal && selectedVideo && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <Card className="w-full max-w-md">
@@ -457,7 +464,6 @@ export default function CoursePage({ params }: { params: { id: string } }) {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="text-center text-gray-700">
-                {/* IMPORTANT: If paying for the whole course, use course.price here */}
                 <p className="text-2xl font-bold text-blue-600 mb-4">TSh {course?.price?.toLocaleString() || selectedVideo.price.toLocaleString()}</p>
                 <p className="text-lg font-semibold mb-2">All payments are on monthly basis.</p>
                 <p>After each month, you will need to make a new payment.</p>
