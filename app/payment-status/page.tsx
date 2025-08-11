@@ -53,7 +53,7 @@ export default function PaymentSuccessPage() {
       try {
         const authToken = localStorage.getItem('auth_token');
 
-        const response = await fetch('http://45.79.205.240/api/users/payment/success', {
+        const response = await fetch('https://portal.kasome.com/api/users/payment/success', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

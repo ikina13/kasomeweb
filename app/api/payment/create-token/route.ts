@@ -60,8 +60,8 @@ export async function POST(request: Request) {
     const PaymentAmount = amount;
     const PaymentCurrency = "TZS";
     const CompanyRef = `KASOME-${Date.now()}-${userId}`; // Unique reference for the transaction
-    const RedirectURL = process.env.NEXT_PUBLIC_DPO_REDIRECT_URL || "http://45.79.205.240/payurl.php"; // From .env.local
-    const BackURL = process.env.NEXT_PUBLIC_DPO_BACK_URL || "http://45.79.205.240/backurl.php"; // From .env.local
+    const RedirectURL = process.env.NEXT_PUBLIC_DPO_REDIRECT_URL || "https://portal.kasome.com/payurl.php"; // From .env.local
+    const BackURL = process.env.NEXT_PUBLIC_DPO_BACK_URL || "https://portal.kasome.com/backurl.php"; // From .env.local
     const CompanyRefUnique = "0";
     const PTL = "96"; // Payment Time Limit
     const PTLtype = "hours";

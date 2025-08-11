@@ -79,7 +79,7 @@ export default function LoginPage() {
         password: password,
       };
 
-      const response = await fetch("http://45.79.205.240/api/users/login", {
+      const response = await fetch("https://portal.kasome.com/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

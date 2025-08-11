@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"
 export async function GET() {
   try {
     // Try to fetch from your external API first
-    const response = await fetch("http://45.79.205.240/api/users/courses")
+    const response = await fetch("https://portal.kasome.com/api/users/courses")
     const responseText = await response.text()
 
     // Try to parse as JSON

@@ -86,7 +86,7 @@ export default function DashboardPage() {
     if (!token) return;
     setMyCoursesLoading(true);
     try {
-        const response = await fetch("http://45.79.205.240/api/users/videos", { headers: { 'Authorization': `Bearer ${token}` } });
+        const response = await fetch("https://portal.kasome.com/api/users/videos", { headers: { 'Authorization': `Bearer ${token}` } });
         const data: ApiResponse<Course[]> = await response.json();
         if (data.status === "SUCCESS") {
             setMyCourses(data.data);
@@ -103,7 +103,7 @@ export default function DashboardPage() {
     if (!token) { setError("Authentication required."); setPageLoading(false); return; }
     setPageLoading(true);
     try {
-      const response = await fetch("http://45.79.205.240/api/users/courses", { headers: { 'Authorization': `Bearer ${token}` } })
+      const response = await fetch("https://portal.kasome.com/api/users/courses", { headers: { 'Authorization': `Bearer ${token}` } })
       const data: ApiResponse<Course[]> = await response.json()
       if (data.status === "SUCCESS") {
         setInitialCourses(data.data)
@@ -118,7 +118,7 @@ export default function DashboardPage() {
     if (!token) { setSubjectsError("Authentication required."); return; }
     setSubjectsLoading(true); setSubjectsError(null); setSubjects([]);
     try {
-      const response = await fetch(`http://45.79.205.240/api/users/subjects/${classId}`, { headers: { 'Authorization': `Bearer ${token}` } })
+      const response = await fetch(`https://portal.kasome.com/api/users/subjects/${classId}`, { headers: { 'Authorization': `Bearer ${token}` } })
       const data: ApiResponse<Course[]> = await response.json()
       if (data.status === "SUCCESS" && data.data) {
         const uniqueSubjects = new Map<number, Subject>()
@@ -134,7 +134,7 @@ export default function DashboardPage() {
     if (!token) { setError("Authentication required."); return; }
     setCoursesLoading(true); setDisplayedCourses([]); setError(null);
     try {
-      const response = await fetch(`http://45.79.205.240/api/users/subjects/${subjectId}/class/${classId}`, { headers: { 'Authorization': `Bearer ${token}` } })
+      const response = await fetch(`https://portal.kasome.com/api/users/subjects/${subjectId}/class/${classId}`, { headers: { 'Authorization': `Bearer ${token}` } })
       const data: ApiResponse<Course[]> = await response.json();
       if (data.status === "SUCCESS") { setDisplayedCourses(data.data) }
       else { setError(data.message || "Could not load courses for this subject.") }
@@ -198,7 +198,7 @@ export default function DashboardPage() {
     <Card className="hover:shadow-lg transition-shadow bg-white flex flex-col">
       <CardHeader className="p-0">
         <Link href={`/course/${course.id}`} className="block relative group">
-          <img src={course.thumbnail.startsWith("sample-") ? `/placeholder.svg?h=200&w=320&text=${encodeURIComponent(course.name)}` : `http://45.79.205.240/storage/${course.thumbnail}`} alt={course.name} className="w-full h-48 object-cover rounded-t-lg" onError={(e) => { (e.target as HTMLImageElement).src = `/placeholder.svg?h=200&w=320&text=${encodeURIComponent(course.name)}` }} />
+          <img src={course.thumbnail.startsWith("sample-") ? `/placeholder.svg?h=200&w=320&text=${encodeURIComponent(course.name)}` : `https://portal.kasome.com/storage/${course.thumbnail}`} alt={course.name} className="w-full h-48 object-cover rounded-t-lg" onError={(e) => { (e.target as HTMLImageElement).src = `/placeholder.svg?h=200&w=320&text=${encodeURIComponent(course.name)}` }} />
           <Badge className="absolute top-2 right-2 bg-white text-black">{course.price === 0 ? "Free" : `TSh ${course.price.toLocaleString()}`}</Badge>
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-opacity duration-300 flex items-center justify-center"><Play className="h-12 w-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" /></div>
         </Link>
@@ -280,7 +280,7 @@ export default function DashboardPage() {
             {subjects.length > 0 ? subjects.map(subject => (
               <Card key={subject.id} className="hover:shadow-lg hover:border-green-500 border-2 border-transparent transition-all cursor-pointer" onClick={() => handleSelectSubject(subject.id)}>
                 <CardContent className="p-4 flex items-center gap-4">
-                  <Avatar className="h-12 w-12 rounded-md"><AvatarImage src={`http://45.79.205.240/storage/${subject.thumbnail}`} alt={subject.name} /><AvatarFallback className="bg-gray-200 rounded-md"><BookMarked className="text-gray-500" /></AvatarFallback></Avatar>
+                  <Avatar className="h-12 w-12 rounded-md"><AvatarImage src={`https://portal.kasome.com/storage/${subject.thumbnail}`} alt={subject.name} /><AvatarFallback className="bg-gray-200 rounded-md"><BookMarked className="text-gray-500" /></AvatarFallback></Avatar>
                   <span className="text-lg font-medium text-gray-800">{subject.name}</span>
                   <ChevronRight className="h-5 w-5 text-gray-400 ml-auto" />
                 </CardContent>

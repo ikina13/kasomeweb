@@ -222,7 +222,7 @@ function StudentRegistrationForm() {
     };
 
     try {
-        const response = await fetch("http://45.79.205.240/api/users/register", {
+        const response = await fetch("https://portal.kasome.com/api/users/register", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify(requestBody),
@@ -356,7 +356,7 @@ function SchoolRegistrationForm() {
         };
 
         try {
-            const response = await fetch("http://45.79.205.240/api/users/register", {
+            const response = await fetch("https://portal.kasome.com/api/users/register", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify(requestBody),

@@ -91,7 +91,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
           return;
         }
         
-        const response = await fetch(`http://45.79.205.240/api/users/courses/${courseId}`, {
+        const response = await fetch(`https://portal.kasome.com/api/users/courses/${courseId}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -187,7 +187,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
     toast.info("Preparing payment, please wait...", { duration: 5000 });
 
     try {
-        const response = await fetch('http://45.79.205.240/api/users/payment/token', {
+        const response = await fetch('https://portal.kasome.com/api/users/payment/token', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -381,7 +381,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
                       <div className="flex-shrink-0 mr-4">
                         <div className="w-24 h-16 bg-gray-200 rounded-lg flex items-center justify-center relative overflow-hidden">
                           <Image
-                            src={`http://45.79.205.240/storage/${video.thumbnail}`}
+                            src={`https://portal.kasome.com/storage/${video.thumbnail}`}
                             alt={`Video ${index + 1} thumbnail`}
                             width={96}
                             height={64}

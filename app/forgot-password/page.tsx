@@ -57,7 +57,7 @@ export default function ForgotPasswordPage() {
     setApiSuccess(null);
 
     try {
-        const response = await fetch("http://45.79.205.240/api/users/forget/password", {
+        const response = await fetch("https://portal.kasome.com/api/users/forget/password", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify({ phone: formData.phone }),
@@ -92,7 +92,7 @@ export default function ForgotPasswordPage() {
     setApiSuccess(null);
 
     try {
-        const response = await fetch("http://45.79.205.240/api/users/reset/password", {
+        const response = await fetch("https://portal.kasome.com/api/users/reset/password", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify({

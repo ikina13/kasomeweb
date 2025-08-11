@@ -58,7 +58,7 @@ export default function CoursesGrid() {
       setError(null);
 
       try {
-        const response = await fetch("http://45.79.205.240/api/users/courses");
+        const response = await fetch("https://portal.kasome.com/api/users/courses");
 
         if (!isMounted) return; // Exit if component unmounted
 
@@ -146,7 +146,7 @@ export default function CoursesGrid() {
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative">
         <Image
-          src={`http://45.79.205.240/storage/${course.thumbnail}`}
+          src={`https://portal.kasome.com/storage/${course.thumbnail}`}
           alt={course.name}
           width={300}
           height={200}
