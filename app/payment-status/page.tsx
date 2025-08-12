@@ -34,6 +34,13 @@ export default function PaymentSuccessPage() {
     const transactionToken = searchParams.get('TransactionToken');
     const companyRef = searchParams.get('CompanyRef');
 
+     // --- NEW LOGIC: Get courseId from localStorage ---
+    const savedCourseId = localStorage.getItem('pending_payment_course_id');
+    if (savedCourseId) {
+        setCourseIdToRedirect(savedCourseId);
+    }
+    // --- END NEW LOGIC ---
+
     if (!transactionId || !transactionToken) {
       setApiStatus('failure');
       setMessage('Payment confirmation failed: Missing parameters.');
@@ -75,13 +82,24 @@ export default function PaymentSuccessPage() {
           setMessage(result.message || 'Payment successfully confirmed!');
           toast.success('Payment Confirmed!', { description: result.message });
 
+
+          // --- NEW LOGIC: Clean up localStorage and redirect ---
+          if (savedCourseId) {
+              localStorage.removeItem('pending_payment_course_id');
+          }
+
           setTimeout(() => {
-            if (courseId) {
-              router.replace(`/course/${courseId}`);
+            if (savedCourseId) {
+              router.replace(`/course/${savedCourseId}`);
             } else {
+              // Fallback if the ID was not found for some reason
               router.back();
             }
           }, 2000);
+          // --- END NEW LOGIC ---
+
+
+         
         } else {
           // --- FAILURE LOGIC: Set failure state on this page ---
           setApiStatus('failure');

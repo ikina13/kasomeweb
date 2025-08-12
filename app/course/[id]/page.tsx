@@ -174,6 +174,16 @@ export default function CoursePage({ params }: { params: { id: string } }) {
       return;
     }
 
+    // --- NEW LOGIC: Save the course ID before leaving the page ---
+    try {
+      localStorage.setItem('pending_payment_course_id', course.id.toString());
+    } catch (e) {
+      console.error("Failed to save to localStorage", e);
+      toast.error("Could not initiate payment process. Please enable storage access.");
+      return;
+    }
+    // --- END NEW LOGIC ---
+
     const authToken = localStorage.getItem("auth_token");
 
     if (!authToken) {
