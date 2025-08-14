@@ -73,12 +73,54 @@ export default function CoursePage({ params }: { params: { id: string } }) {
   const [selectedVideo, setSelectedVideo] = useState<VideoClip | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
+  // Pure function: returns a NEW course object with payment statuses adjusted according to expired_date
+  const applyExpiryCheckToCourse = (inputCourse: FetchedCourse): FetchedCourse => {
+    // shallow copy course and deeply copy video clips to avoid mutating original
+    const newCourse: FetchedCourse = {
+      ...inputCourse,
+      practicle_video_clips: inputCourse.practicle_video_clips.map(v => ({ ...v })),
+      payment: inputCourse.payment ? { ...inputCourse.payment } : null,
+    };
+
+    const payment = newCourse.payment;
+    if (payment?.status === "settled" && payment?.expired_date) {
+      // Convert "YYYY-MM-DD HH:mm:ss" -> "YYYY-MM-DDTHH:mm:ss" for reliable parsing
+      const raw = String(payment.expired_date);
+      const isoLike = raw.includes("T") ? raw : raw.replace(" ", "T");
+      const expiryDate = new Date(isoLike);
+      const now = new Date();
+
+      if (isNaN(expiryDate.getTime())) {
+        // If parsing fails, don't change anything
+        return newCourse;
+      }
+
+      if (now >= expiryDate) {
+        // expired: set any previously paid videos back to 'buy'
+        newCourse.practicle_video_clips = newCourse.practicle_video_clips.map(video =>
+          video.payment_status === "paid" ? { ...video, payment_status: "buy" } : video
+        );
+        newCourse.payment.status = "expired";
+      } else {
+        // still active: mark buy -> paid (so unlocked)
+        newCourse.practicle_video_clips = newCourse.practicle_video_clips.map(video =>
+          video.payment_status === "buy" ? { ...video, payment_status: "paid" } : video
+        );
+        // keep payment.status as is ("settled")
+      }
+    }
+
+    return newCourse;
+  };
+
   useEffect(() => {
     if (!courseId) {
       setError("Course ID not provided.");
       setLoading(false);
       return;
     }
+
+    let mounted = true;
 
     const fetchCourseData = async () => {
       setLoading(true);
@@ -96,32 +138,27 @@ export default function CoursePage({ params }: { params: { id: string } }) {
         });
 
         if (!response.ok) {
-          const errorBody = await response.json();
+          const errorBody = await response.json().catch(() => ({}));
           throw new Error(errorBody.message || `Failed to fetch course data: HTTP status ${response.status}`);
         }
 
         const apiResponse: CourseApiResponse = await response.json();
 
         if (apiResponse.status === "SUCCESS" && apiResponse.data && apiResponse.data.length > 0) {
-          const fetchedCourse = apiResponse.data[0];
+          let fetchedCourse = apiResponse.data[0];
 
-          // Update video payment_status based on course payment status
-          if (fetchedCourse.payment?.status === "settled") {
-            fetchedCourse.practicle_video_clips = fetchedCourse.practicle_video_clips.map(video => {
-              if (video.payment_status === "buy") {
-                return { ...video, payment_status: "paid" };
-              }
-              return video;
-            });
-          }
+          // Apply expiry check (this will set buy -> paid or paid -> buy based on expired_date)
+          fetchedCourse = applyExpiryCheckToCourse(fetchedCourse);
 
           // NEW: Sort videos by ID in ascending order
           const sortedVideoClips = [...fetchedCourse.practicle_video_clips].sort((a, b) => a.id - b.id);
           fetchedCourse.practicle_video_clips = sortedVideoClips;
 
+          if (!mounted) return;
+
           setCourse(fetchedCourse);
 
-          // Find the first free video to set as default
+          // Find the first free or paid video to set as default (or first)
           let defaultVideo: VideoClip | null = null;
           if (fetchedCourse.practicle_video_clips && fetchedCourse.practicle_video_clips.length > 0) {
             defaultVideo = fetchedCourse.practicle_video_clips.find(
@@ -141,12 +178,40 @@ export default function CoursePage({ params }: { params: { id: string } }) {
         setCourse(null);
         setSelectedVideo(null);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
 
     fetchCourseData();
+
+    return () => {
+      mounted = false;
+    };
   }, [courseId]);
+
+  // Keep selectedVideo in sync with any changes to course (e.g., if expiry changes a video's payment_status)
+  useEffect(() => {
+    if (!course || !selectedVideo) return;
+    const updated = course.practicle_video_clips.find(v => v.id === selectedVideo.id);
+    if (updated && (updated.payment_status !== selectedVideo.payment_status || updated.otp !== selectedVideo.otp || updated.playbackInfo !== selectedVideo.playbackInfo)) {
+      setSelectedVideo(updated);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [course?.practicle_video_clips]);
+
+  // Auto-check expiry every minute while the page is open (so status flips live when expired_date passes)
+  useEffect(() => {
+    if (!course) return;
+    const timer = setInterval(() => {
+      setCourse(prev => {
+        if (!prev) return prev;
+        const updated = applyExpiryCheckToCourse(prev);
+        return updated;
+      });
+    }, 60_000); // 60s
+
+    return () => clearInterval(timer);
+  }, [course]);
 
   const handleVideoClick = (video: VideoClip) => {
     setSelectedVideo(video);
@@ -157,10 +222,11 @@ export default function CoursePage({ params }: { params: { id: string } }) {
       setShowPaymentModal(false);
     }
 
-    // NEW: Scroll to video player
+    // Scroll to video player
     setTimeout(() => {
       if (videoPlayerRef.current) {
-        videoPlayerRef.current.scrollIntoView({ 
+        // Card might not forward ref typing; this is a DOM scroll attempt
+        (videoPlayerRef.current as HTMLDivElement).scrollIntoView({ 
           behavior: 'smooth',
           block: 'start'
         });
@@ -174,7 +240,6 @@ export default function CoursePage({ params }: { params: { id: string } }) {
       return;
     }
 
-    // --- NEW LOGIC: Save the course ID before leaving the page ---
     try {
       localStorage.setItem('pending_payment_course_id', course.id.toString());
     } catch (e) {
@@ -182,7 +247,6 @@ export default function CoursePage({ params }: { params: { id: string } }) {
       toast.error("Could not initiate payment process. Please enable storage access.");
       return;
     }
-    // --- END NEW LOGIC ---
 
     const authToken = localStorage.getItem("auth_token");
 
@@ -286,7 +350,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
           {/* Video Player and Course Info */}
           <div className="space-y-6">
             {/* Video Player - Added ref for scrolling */}
-            <Card className="overflow-hidden" ref={videoPlayerRef}>
+            <Card className="overflow-hidden" ref={videoPlayerRef as any}>
               <div className="relative bg-black aspect-video">
                 {selectedVideo ? (
                   (selectedVideo.payment_status === "free" || selectedVideo.payment_status === "paid") ? (
