@@ -36,7 +36,7 @@ export default function AboutPage() {
                 Home
               </Link>
               <Link href="/about" className="text-gray-900 hover:text-yellow-500">
-                About
+                About us
               </Link>
               <Link href="/contact" className="text-gray-600 hover:text-yellow-500">
                 Contact
@@ -140,11 +140,12 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="relative">
-              <img
-                 src="/images/about3.jpg"
-                alt="Teacher working with mathematical equations"
-                className="rounded-lg shadow-lg w-full h-auto"
-              />
+              <Link href="/" className="flex items-center space-x-2">
+              <div className="w-10 h-10 bg-green-0 rounded-lg flex items-center justify-center">
+                 <img src="/images/kasomelogo.svg" alt="Kasome Logo" />
+              </div>
+              <span className="text-2xl font-bold text-white-900">Kasome</span>
+            </Link>
             </div>
           </div>
         </div>
@@ -263,7 +264,12 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
-              <Logo className="mb-4" />
+              <Link href="/" className="flex items-center space-x-2">
+              <div className="w-10 h-10 bg-green-0 rounded-lg flex items-center justify-center">
+                 <img src="/images/kasomelogo.svg" alt="Kasome Logo" />
+              </div>
+              <span className="text-2xl font-bold text-white-900">Kasome</span>
+            </Link>
               <p className="text-gray-400 mb-4">
                 Making high-quality education accessible to every student in Tanzania through innovative technology.
               </p>

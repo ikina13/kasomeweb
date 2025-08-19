@@ -5,10 +5,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { BookOpen, Users, Award, TrendingUp, Star, ArrowRight, Briefcase, Lightbulb, PieChart, PlaySquare, BookCopy, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { BookOpen, ShoppingCart,Heart,Users, Award, TrendingUp, Star, ArrowRight, Briefcase, Lightbulb, PieChart, PlaySquare, BookCopy, X, ChevronLeft, ChevronRight } from "lucide-react";
 import Logo from "@/components/Logo";
 import CoursesGrid from "@/components/CoursesGrid";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge"
 
 // Import for particles
 import Particles from "react-tsparticles";
@@ -16,7 +17,7 @@ import type { Engine } from "tsparticles-engine";
 import { loadFull } from "tsparticles";
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// +++ PARTICLES COMPONENT (CORRECTED TO STAY IN HERO SECTION)
+// +++ PARTICLES COMPONENT
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function ParticlesComponent() {
   const particlesInit = useCallback(async (engine: Engine) => {
@@ -24,76 +25,38 @@ function ParticlesComponent() {
   }, []);
 
   const particlesOptions = {
-    // This is the key setting to keep particles inside their container
-    fullScreen: {
-      enable: false, // This is the most important line
-    },
-    style: {
-      position: "absolute" as const, // This reinforces the positioning
-      width: "100%",
-      height: "100%",
-    },
-    background: {
-      color: {
-        value: "transparent",
-      },
-    },
+    fullScreen: { enable: false },
+    style: { position: "absolute" as const, width: "100%", height: "100%" },
+    background: { color: { value: "transparent" } },
     fpsLimit: 120,
     interactivity: {
       events: {
-        onHover: {
-          enable: true,
-          mode: "repulse",
-        },
+        onHover: { enable: true, mode: "repulse" },
         resize: true,
       },
       modes: {
-        repulse: {
-          distance: 100,
-          duration: 0.4,
-        },
+        repulse: { distance: 100, duration: 0.4 },
       },
     },
     particles: {
-      color: {
-        value: "#16a34a", // green-600
-      },
-      links: {
-        color: "#22c55e", // green-500
-        distance: 150,
-        enable: true,
-        opacity: 0.5,
-        width: 1,
-      },
-      collisions: {
-        enable: true,
-      },
+      color: { value: "#16a34a" },
+      links: { color: "#22c55e", distance: 150, enable: true, opacity: 0.5, width: 1 },
+      collisions: { enable: true },
       move: {
         direction: "none" as const,
         enable: true,
-        outModes: {
-          default: "bounce" as const,
-        },
+        outModes: { default: "bounce" as const },
         random: false,
         speed: 1,
         straight: false,
       },
       number: {
-        density: {
-          enable: true,
-          area: 800,
-        },
+        density: { enable: true, area: 800 },
         value: 80,
       },
-      opacity: {
-        value: 0.5,
-      },
-      shape: {
-        type: "circle" as const,
-      },
-      size: {
-        value: { min: 1, max: 5 },
-      },
+      opacity: { value: 0.5 },
+      shape: { type: "circle" as const },
+      size: { value: { min: 1, max: 5 } },
     },
     detectRetina: true,
   };
@@ -120,11 +83,12 @@ interface NewHeroProps {
 const subjects = [
     { name: "Secondary & High school courses", students: "2,300+", rating: 4.7, color: "bg-emerald-500" },
     { name: "English Courses", students: "3,200+", rating: 4.8, color: "bg-orange-500" },
-    { name: "Kiswahili Courses", students: "2,800+", rating: 4.9, color: "bg-red-500" },
+    { name: "Swahili Courses", students: "2,800+", rating: 4.9, color: "bg-red-500" },
+    
 ]
 
 const partners = [
-    { name: "Ministry of Education", logo: "/images/partner1.png" }, { name: "UKaid", logo: "/images/partner2.png" }, { name: "Ford Foundation", logo: "/images/partner3.png" }, { name: "USAID", logo: "/images/partner4.png" }, { name: "Zuku", logo: "/images/partner5.png" },
+    { name: "Ministry of Education", logo: "/images/partner1.png" }, { name: "UKaid", logo: "/images/partner2.png" }, { name: "Ford Foundation", logo: "/images/partner3.png" }, { name: "USAID", logo: "/images/partner4.jpeg" }, { name: "Zuku", logo: "/images/partner5.png" },{ name: "upendo", logo: "/images/partner6.png" },
 ]
 
 const StatCard = ({ icon, value, label }: { icon: React.ReactNode, value: string, label: string }) => (
@@ -141,15 +105,10 @@ const StatCard = ({ icon, value, label }: { icon: React.ReactNode, value: string
 
 function NewHero({ studentImageUrl, onFreeTrialClick }: NewHeroProps) {
   return (
-    // `relative` contains the absolutely positioned particles
     <section className="relative w-full bg-gray-50 overflow-hidden">
-      
-      {/* Particles Component placed in the background layer */}
       <div className="absolute inset-0 z-0">
         <ParticlesComponent />
       </div>
-
-      {/* Hero content sits on a higher layer to appear on top */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="text-center lg:text-left">
@@ -178,9 +137,9 @@ function NewHero({ studentImageUrl, onFreeTrialClick }: NewHeroProps) {
             <div className="absolute inset-0 flex items-center justify-center">
               <Image src={studentImageUrl} alt="Student with books" width={250} height={250} className="object-contain drop-shadow-2xl z-10" priority />
             </div>
-            <div className="absolute top-8 left-0 z-20 animate-fade-in-up"><StatCard icon={<PieChart className="h-8 w-8 text-green-600"/>} value="5K+" label="Online Courses"/></div>
-            <div className="absolute top-1/3 right-0 z-20 animate-fade-in-up" style={{ animationDelay: '0.2s' }}><StatCard icon={<PlaySquare className="h-8 w-8 text-green-600"/>} value="2K+" label="Video Courses"/></div>
-            <div className="absolute bottom-8 left-1/4 z-20 animate-fade-in-up" style={{ animationDelay: '0.4s' }}><StatCard icon={<BookCopy className="h-8 w-8 text-green-600"/>} value="250+" label="Tutors"/></div>
+            <div className="absolute top-8 left-0 z-20 animate-fade-in-up"><StatCard icon={<PieChart className="h-8 w-8 text-green-600"/>} value="81" label="Online Courses"/></div>
+            <div className="absolute top-1/3 right-0 z-20 animate-fade-in-up" style={{ animationDelay: '0.2s' }}><StatCard icon={<PlaySquare className="h-8 w-8 text-green-600"/>} value="856" label="Video Courses"/></div>
+            <div className="absolute bottom-8 left-1/4 z-20 animate-fade-in-up" style={{ animationDelay: '0.4s' }}><StatCard icon={<BookCopy className="h-8 w-8 text-green-600"/>} value="16" label="Tutors"/></div>
           </div>
         </div>
       </div>
@@ -317,7 +276,7 @@ export default function HomePage() {
           <div className="flex justify-between items-center h-16">
             <Logo />
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="/about" className="text-gray-600 hover:text-gray-900">About</Link>
+              <Link href="/about" className="text-gray-600 hover:text-gray-900">About us</Link>
               <Link href="/contact" className="text-gray-600 hover:text-gray-900">Contact</Link>
             </div>
             <div className="flex items-center space-x-4">
@@ -397,6 +356,128 @@ export default function HomePage() {
         </div>
       </section>
 
+        {/* Books Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Educational Books</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Enhance your learning with our collection of educational books and support students through donations
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Swahili Books Card */}
+            <Link href="/books/swahili">
+              <Card className="group cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-green-200 hover:border-green-300">
+                <div className="relative h-64 overflow-hidden rounded-t-lg">
+                  <Image
+                    src="/images/book2.jpeg"
+                    alt="Swahili Books"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4">
+                    <Badge className="bg-green-600 text-white">Swahili</Badge>
+                  </div>
+                </div>
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-3">
+                    <BookOpen className="h-6 w-6 text-green-600 mr-2" />
+                    <h3 className="text-xl font-bold text-gray-900">Swahili Books</h3>
+                  </div>
+                  <p className="text-gray-600 mb-4">
+                    Discover a wide collection of Swahili educational books.Perfect for learning and
+                    improving your Swahili language skills.
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500">50+ Books Available</span>
+                    <div className="flex items-center text-green-600 group-hover:text-green-700">
+                      <ShoppingCart className="h-4 w-4 mr-1" />
+                      <span className="text-sm font-medium">Shop Now</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* English Books Card */}
+            <Link href="/books/english">
+              <Card className="group cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-green-200 hover:border-green-300">
+                <div className="relative h-64 overflow-hidden rounded-t-lg">
+                  <Image
+                    src="/images/book5.jpg"
+                    alt="English Books"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4">
+                    <Badge className="bg-green-700 text-white">English</Badge>
+                  </div>
+                </div>
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-3">
+                    <BookOpen className="h-6 w-6 text-green-700 mr-2" />
+                    <h3 className="text-xl font-bold text-gray-900">English Books</h3>
+                  </div>
+                  <p className="text-gray-600 mb-4">
+                    Explore our comprehensive collection of English educational books. From grammar to literature, find
+                    everything you need.
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500">75+ Books Available</span>
+                    <div className="flex items-center text-green-700 group-hover:text-green-800">
+                      <ShoppingCart className="h-4 w-4 mr-1" />
+                      <span className="text-sm font-medium">Shop Now</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* Donate Card */}
+            <Link href="/donate">
+              <Card className="group cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-green-200 hover:border-green-300">
+                <div className="relative h-64 overflow-hidden rounded-t-lg">
+                  <Image
+                    src="/images/donate.png"
+                    alt="Donate Books"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-green-600/60 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4">
+                    <Badge className="bg-green-800 text-white">Donate</Badge>
+                  </div>
+                  <div className="absolute top-4 right-4">
+                    <Heart className="h-8 w-8 text-white animate-pulse" />
+                  </div>
+                </div>
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-3">
+                    <Heart className="h-6 w-6 text-green-800 mr-2" />
+                    <h3 className="text-xl font-bold text-gray-900">Donate Books</h3>
+                  </div>
+                  <p className="text-gray-600 mb-4">
+                    Help students access quality education by donating books. Your contribution makes a difference in
+                    someone's learning journey.
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500">Make an Impact</span>
+                    <div className="flex items-center text-green-800 group-hover:text-green-900">
+                      <Heart className="h-4 w-4 mr-1" />
+                      <span className="text-sm font-medium">Donate Now</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Popular Courses Section */}
       <section ref={coursesSectionRef} className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -432,7 +513,7 @@ export default function HomePage() {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Trusted Partners</h2>
             <p className="text-xl text-gray-600">Working together to transform education</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 items-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
             {partners.map((partner, index) => (
               <div key={index} className="flex justify-center">
                 <img src={partner.logo || "/placeholder.svg"} alt={partner.name} className="h-12 w-auto hover:opacity-100 transition-opacity" />
