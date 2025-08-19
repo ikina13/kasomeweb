@@ -41,7 +41,7 @@ const donationAmounts = [
 ]
 
 const impactStats = [
-  { icon: Users, value: "2,500+", label: "Books Purchased" },
+  { icon: Users, value: "25+", label: "Books Purchased" },
   { icon: BookOpen, value: "15,000+", label: "Students Reached" },
   { icon: Award, value: "95%", label: "Satisfaction Rate" },
 ]
