@@ -137,8 +137,8 @@ function NewHero({ studentImageUrl, onFreeTrialClick }: NewHeroProps) {
             <div className="absolute inset-0 flex items-center justify-center">
               <Image src={studentImageUrl} alt="Student with books" width={250} height={250} className="object-contain drop-shadow-2xl z-10" priority />
             </div>
-            <div className="absolute top-8 left-0 z-20 animate-fade-in-up"><StatCard icon={<PieChart className="h-8 w-8 text-green-600"/>} value="81" label="Online Courses"/></div>
-            <div className="absolute top-1/3 right-0 z-20 animate-fade-in-up" style={{ animationDelay: '0.2s' }}><StatCard icon={<PlaySquare className="h-8 w-8 text-green-600"/>} value="856" label="Video Courses"/></div>
+            <div className="absolute top-8 left-0 z-20 animate-fade-in-up"><StatCard icon={<PieChart className="h-8 w-8 text-green-600"/>} value="143" label="Online Courses"/></div>
+            <div className="absolute top-1/3 right-0 z-20 animate-fade-in-up" style={{ animationDelay: '0.2s' }}><StatCard icon={<PlaySquare className="h-8 w-8 text-green-600"/>} value="2250" label="Video Courses"/></div>
             <div className="absolute bottom-8 left-1/4 z-20 animate-fade-in-up" style={{ animationDelay: '0.4s' }}><StatCard icon={<BookCopy className="h-8 w-8 text-green-600"/>} value="16" label="Tutors"/></div>
           </div>
         </div>
