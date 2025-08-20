@@ -6,9 +6,9 @@ import Logo from "@/components/Logo"
 
 export default function AboutPage() {
   const stats = [
-    { icon: Users, label: "Students Reached", value: "500,000+", color: "text-blue-600" },
-    { icon: BookOpen, label: "Video Lessons", value: "10,000+", color: "text-green-600" },
-    { icon: GraduationCap, label: "Expert Teachers", value: "200+", color: "text-purple-600" },
+    { icon: Users, label: "Students Reached", value: "1502+", color: "text-blue-600" },
+    { icon: BookOpen, label: "Video Lessons", value: "2250+", color: "text-green-600" },
+    { icon: GraduationCap, label: "Expert Teachers", value: "16+", color: "text-purple-600" },
     { icon: MapPin, label: "Regions Covered", value: "All Tanzania", color: "text-orange-600" },
   ]
 

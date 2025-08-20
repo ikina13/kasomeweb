@@ -358,8 +358,7 @@ export default function DashboardPage() {
             </div>
             <div className="mt-6 md:mt-0 grid grid-cols-3 gap-6 text-center">
               <div><div className="text-2xl font-bold">{initialCourses.length}</div><div className="text-sm opacity-75">Courses</div></div>
-              <div><div className="text-2xl font-bold">85%</div><div className="text-sm opacity-75">Progress</div></div>
-              <div><div className="text-2xl font-bold">24h</div><div className="text-sm opacity-75">This Week</div></div>
+           
             </div>
           </div>
         </div>
