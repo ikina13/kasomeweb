@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, Play, Lock, CheckCircle, Users, Star } from "lucide-react"
+import { ArrowLeft, Play, Lock, Users, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -73,9 +73,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
   const [selectedVideo, setSelectedVideo] = useState<VideoClip | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-  // Pure function: returns a NEW course object with payment statuses adjusted according to expired_date
   const applyExpiryCheckToCourse = (inputCourse: FetchedCourse): FetchedCourse => {
-    // shallow copy course and deeply copy video clips to avoid mutating original
     const newCourse: FetchedCourse = {
       ...inputCourse,
       practicle_video_clips: inputCourse.practicle_video_clips.map(v => ({ ...v })),
@@ -84,32 +82,26 @@ export default function CoursePage({ params }: { params: { id: string } }) {
 
     const payment = newCourse.payment;
     if (payment?.status === "settled" && payment?.expired_date) {
-      // Convert "YYYY-MM-DD HH:mm:ss" -> "YYYY-MM-DDTHH:mm:ss" for reliable parsing
       const raw = String(payment.expired_date);
       const isoLike = raw.includes("T") ? raw : raw.replace(" ", "T");
       const expiryDate = new Date(isoLike);
       const now = new Date();
 
       if (isNaN(expiryDate.getTime())) {
-        // If parsing fails, don't change anything
         return newCourse;
       }
 
       if (now >= expiryDate) {
-        // expired: set any previously paid videos back to 'buy'
         newCourse.practicle_video_clips = newCourse.practicle_video_clips.map(video =>
           video.payment_status === "paid" ? { ...video, payment_status: "buy" } : video
         );
         newCourse.payment.status = "expired";
       } else {
-        // still active: mark buy -> paid (so unlocked)
         newCourse.practicle_video_clips = newCourse.practicle_video_clips.map(video =>
           video.payment_status === "buy" ? { ...video, payment_status: "paid" } : video
         );
-        // keep payment.status as is ("settled")
       }
     }
-
     return newCourse;
   };
 
@@ -123,16 +115,16 @@ export default function CoursePage({ params }: { params: { id: string } }) {
     let mounted = true;
 
     const fetchCourseData = async () => {
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        // Instead of showing an error, redirect to the register page
+        router.push('/register');
+        return; // Stop the rest of the function from running
+      }
+      
       setLoading(true);
       setError(null);
       try {
-        const token = localStorage.getItem("auth_token");
-        if (!token) {
-          setError("Authentication required.");
-          setLoading(false);
-          return;
-        }
-        
         const response = await fetch(`https://portal.kasome.com/api/users/courses/${courseId}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -146,11 +138,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
 
         if (apiResponse.status === "SUCCESS" && apiResponse.data && apiResponse.data.length > 0) {
           let fetchedCourse = apiResponse.data[0];
-
-          // Apply expiry check (this will set buy -> paid or paid -> buy based on expired_date)
           fetchedCourse = applyExpiryCheckToCourse(fetchedCourse);
-
-          // NEW: Sort videos by ID in ascending order
           const sortedVideoClips = [...fetchedCourse.practicle_video_clips].sort((a, b) => a.id - b.id);
           fetchedCourse.practicle_video_clips = sortedVideoClips;
 
@@ -158,7 +146,6 @@ export default function CoursePage({ params }: { params: { id: string } }) {
 
           setCourse(fetchedCourse);
 
-          // Find the first free or paid video to set as default (or first)
           let defaultVideo: VideoClip | null = null;
           if (fetchedCourse.practicle_video_clips && fetchedCourse.practicle_video_clips.length > 0) {
             defaultVideo = fetchedCourse.practicle_video_clips.find(
@@ -187,19 +174,16 @@ export default function CoursePage({ params }: { params: { id: string } }) {
     return () => {
       mounted = false;
     };
-  }, [courseId]);
+  }, [courseId, router]); // Add router to the dependency array
 
-  // Keep selectedVideo in sync with any changes to course (e.g., if expiry changes a video's payment_status)
   useEffect(() => {
     if (!course || !selectedVideo) return;
     const updated = course.practicle_video_clips.find(v => v.id === selectedVideo.id);
     if (updated && (updated.payment_status !== selectedVideo.payment_status || updated.otp !== selectedVideo.otp || updated.playbackInfo !== selectedVideo.playbackInfo)) {
       setSelectedVideo(updated);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [course?.practicle_video_clips]);
+  }, [course, selectedVideo]);
 
-  // Auto-check expiry every minute while the page is open (so status flips live when expired_date passes)
   useEffect(() => {
     if (!course) return;
     const timer = setInterval(() => {
@@ -208,7 +192,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
         const updated = applyExpiryCheckToCourse(prev);
         return updated;
       });
-    }, 60_000); // 60s
+    }, 60_000);
 
     return () => clearInterval(timer);
   }, [course]);
@@ -222,10 +206,8 @@ export default function CoursePage({ params }: { params: { id: string } }) {
       setShowPaymentModal(false);
     }
 
-    // Scroll to video player
     setTimeout(() => {
       if (videoPlayerRef.current) {
-        // Card might not forward ref typing; this is a DOM scroll attempt
         (videoPlayerRef.current as HTMLDivElement).scrollIntoView({ 
           behavior: 'smooth',
           block: 'start'
@@ -330,7 +312,6 @@ export default function CoursePage({ params }: { params: { id: string } }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-16">
@@ -347,9 +328,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
-          {/* Video Player and Course Info */}
           <div className="space-y-6">
-            {/* Video Player - Added ref for scrolling */}
             <Card className="overflow-hidden" ref={videoPlayerRef as any}>
               <div className="relative bg-black aspect-video">
                 {selectedVideo ? (
@@ -384,7 +363,6 @@ export default function CoursePage({ params }: { params: { id: string } }) {
               </div>
             </Card>
 
-            {/* Current Video Info */}
             {selectedVideo && (
               <Card>
                 <CardHeader>
@@ -393,7 +371,6 @@ export default function CoursePage({ params }: { params: { id: string } }) {
               </Card>
             )}
 
-            {/* Course Information */}
             <Card>
               <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -432,7 +409,6 @@ export default function CoursePage({ params }: { params: { id: string } }) {
             </Card>
           </div>
 
-          {/* Video List */}
           <Card>
             <CardHeader>
               <CardTitle className="text-xl font-bold">Course Content</CardTitle>
@@ -451,7 +427,6 @@ export default function CoursePage({ params }: { params: { id: string } }) {
                           : "border-gray-200 hover:border-gray-300"
                       }`}
                     >
-                      {/* Video Thumbnail */}
                       <div className="flex-shrink-0 mr-4">
                         <div className="w-24 h-16 bg-gray-200 rounded-lg flex items-center justify-center relative overflow-hidden">
                           <Image
@@ -476,7 +451,6 @@ export default function CoursePage({ params }: { params: { id: string } }) {
                         </div>
                       </div>
 
-                      {/* Video Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between mb-2">
                           <h4
@@ -487,28 +461,13 @@ export default function CoursePage({ params }: { params: { id: string } }) {
                             {index + 1}. {video.name}
                           </h4>
                           {video.payment_status === "free" && (
-                            <Badge
-                              variant="outline"
-                              className="text-xs bg-green-50 text-green-700 border-green-200 flex-shrink-0 ml-2"
-                            >
-                              Free
-                            </Badge>
+                            <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200 flex-shrink-0 ml-2">Free</Badge>
                           )}
                           {video.payment_status === "buy" && (
-                            <Badge
-                              variant="outline"
-                              className="text-xs bg-yellow-50 text-yellow-700 border-yellow-200 flex-shrink-0 ml-2"
-                            >
-                              Buy
-                            </Badge>
+                            <Badge variant="outline" className="text-xs bg-yellow-50 text-yellow-700 border-yellow-200 flex-shrink-0 ml-2">Buy</Badge>
                           )}
                           {video.payment_status === "paid" && (
-                            <Badge
-                              variant="outline"
-                              className="text-xs bg-red-50 text-red-700 border-red-200 flex-shrink-0 ml-2"
-                            >
-                              Paid
-                            </Badge>
+                            <Badge variant="outline" className="text-xs bg-red-50 text-red-700 border-red-200 flex-shrink-0 ml-2">Paid</Badge>
                           )}
                         </div>
 
@@ -529,7 +488,6 @@ export default function CoursePage({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      {/* Payment Modal */}
       {showPaymentModal && selectedVideo && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <Card className="w-full max-w-md">
@@ -542,14 +500,9 @@ export default function CoursePage({ params }: { params: { id: string } }) {
                 <p className="text-lg font-semibold mb-2">All payments are on monthly basis.</p>
                 <p>After each month, you will need to make a new payment.</p>
               </div>
-
               <div className="flex space-x-3 mt-6">
-                <Button variant="outline" className="flex-1 bg-transparent" onClick={() => setShowPaymentModal(false)}>
-                  Cancel
-                </Button>
-                <Button className="flex-1 bg-yellow-500 hover:bg-yellow-600" onClick={handleProceedToPay}>
-                  Proceed to Pay
-                </Button>
+                <Button variant="outline" className="flex-1 bg-transparent" onClick={() => setShowPaymentModal(false)}>Cancel</Button>
+                <Button className="flex-1 bg-yellow-500 hover:bg-yellow-600" onClick={handleProceedToPay}>Proceed to Pay</Button>
               </div>
             </CardContent>
           </Card>
