@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { BookOpen, ShoppingCart,Heart,Users, Award, TrendingUp, Star, ArrowRight, Briefcase, Lightbulb, PieChart, PlaySquare, BookCopy, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { BookOpen, ShoppingCart,Heart,Users, Award, TrendingUp, Star, ArrowRight, Globe, Clock, Briefcase, Lightbulb, PieChart, PlaySquare, BookCopy, X, ChevronLeft, ChevronRight } from "lucide-react";
 import Logo from "@/components/Logo";
 import CoursesGrid from "@/components/CoursesGrid";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -88,7 +88,7 @@ const subjects = [
 ]
 
 const partners = [
-    { name: "Ministry of Education", logo: "/images/partner1.png" }, { name: "UKaid", logo: "/images/partner2.png" }, { name: "Ford Foundation", logo: "/images/partner3.png" }, { name: "USAID", logo: "/images/partner4.jpeg" }, { name: "Zuku", logo: "/images/partner5.png" },{ name: "upendo", logo: "/images/partner6.png" },
+    { name: "Ministry of Education", logo: "/images/partner1.png" },{ name: "Ford Foundation", logo: "/images/partner3.png" }, { name: "UKaid", logo: "/images/partner2.png" }, { name: "USAID", logo: "/images/partner4.jpeg" }, { name: "Zuku", logo: "/images/partner5.png" },{ name: "upendo", logo: "/images/partner6.png" },
 ]
 
 const StatCard = ({ icon, value, label }: { icon: React.ReactNode, value: string, label: string }) => (
@@ -137,7 +137,7 @@ function NewHero({ studentImageUrl, onFreeTrialClick }: NewHeroProps) {
             <div className="absolute inset-0 flex items-center justify-center">
               <Image src={studentImageUrl} alt="Student with books" width={250} height={250} className="object-contain drop-shadow-2xl z-10" priority />
             </div>
-            <div className="absolute top-8 left-0 z-20 animate-fade-in-up"><StatCard icon={<PieChart className="h-8 w-8 text-green-600"/>} value="143" label="Online Courses"/></div>
+            <div className="absolute top-8 left-0 z-20 animate-fade-in-up"><StatCard icon={<PieChart className="h-8 w-8 text-green-600"/>} value="243" label="Online Courses"/></div>
             <div className="absolute top-1/3 right-0 z-20 animate-fade-in-up" style={{ animationDelay: '0.2s' }}><StatCard icon={<PlaySquare className="h-8 w-8 text-green-600"/>} value="2250" label="Video Courses"/></div>
             <div className="absolute bottom-8 left-1/4 z-20 animate-fade-in-up" style={{ animationDelay: '0.4s' }}><StatCard icon={<BookCopy className="h-8 w-8 text-green-600"/>} value="16" label="Tutors"/></div>
           </div>
@@ -307,8 +307,8 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card className="text-center p-6"><div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4"><BookOpen className="h-6 w-6 text-green-600" /></div><h3 className="text-xl font-semibold mb-2">Expert Instructors</h3><p className="text-gray-600">Learn from industry professionals.</p></Card>
-            <Card className="text-center p-6"><div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4"><Users className="h-6 w-6 text-blue-600" /></div><h3 className="text-xl font-semibold mb-2">Community Support</h3><p className="text-gray-600">Join a vibrant community of learners.</p></Card>
-            <Card className="text-center p-6"><div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4"><Award className="h-6 w-6 text-purple-600" /></div><h3 className="text-xl font-semibold mb-2">Skills</h3><p className="text-gray-600">Earn skills upon course completion.</p></Card>
+            <Card className="text-center p-6"><div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4"><Globe className="h-6 w-6 text-blue-600" /></div><h3 className="text-xl font-semibold mb-2">Learn Anywhere</h3><p className="text-gray-600">Access courses from any device, anywhere in the world.</p></Card>
+            <Card className="text-center p-6"><div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4"><Clock className="h-6 w-6 text-purple-600" /></div><h3 className="text-xl font-semibold mb-2">Flexible Schedule</h3><p className="text-gray-600">Study at your own pace with lifetime access to courses.</p></Card>
             <Card className="text-center p-6"><div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-4"><TrendingUp className="h-6 w-6 text-orange-600" /></div><h3 className="text-xl font-semibold mb-2">Track Progress</h3><p className="text-gray-600">Monitor your learning journey.</p></Card>
           </div>
         </div>
