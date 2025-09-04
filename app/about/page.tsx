@@ -1,7 +1,23 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Users, BookOpen, GraduationCap, MapPin, Award, Target, Heart, Lightbulb } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import {
+  Users,
+  BookOpen,
+  GraduationCap,
+  MapPin,
+  Award,
+  Target,
+  Lightbulb,
+  Shield,
+  Zap,
+  Globe,
+  CheckCircle,
+  AlertTriangle,
+  Tv,
+  UserCheck,
+} from "lucide-react"
 import Logo from "@/components/Logo"
 
 export default function AboutPage() {
@@ -12,15 +28,38 @@ export default function AboutPage() {
     { icon: MapPin, label: "Regions Covered", value: "All Tanzania", color: "text-orange-600" },
   ]
 
+  const challenges = [
+    {
+      icon: UserCheck,
+      title: "Shortage of Qualified Teachers",
+      description: "Limited number of experienced teachers in secondary schools across Tanzania",
+    },
+    {
+      icon: MapPin,
+      title: "Inaccessible Tuition Centers",
+      description: "Many students cannot reach or afford private tuition and after-school programs",
+    },
+    {
+      icon: Shield,
+      title: "Safety Concerns",
+      description: "Especially for girls traveling to distant learning centers",
+    },
+    {
+      icon: BookOpen,
+      title: "Lack of Learning Resources",
+      description: "Insufficient affordable and reliable educational materials",
+    },
+  ]
+
   const partners = [
-   // { name: "Tanzania Coat of Arms", logo: "/placeholder.svg?height=60&width=60&text=TZ" },
     { name: "Ministry of Education", logo: "/images/partner1.png" },
     { name: "UKaid", logo: "/images/partner2.png" },
     { name: "Ford Foundation", logo: "/images/partner3.png" },
     { name: "USAID", logo: "/images/partner4.png" },
- //   { name: "Plus TV", logo: "/placeholder.svg?height=60&width=60&text=Plus" },
     { name: "Zuku", logo: "/images/partner5.png" },
   ]
+
+  const broadcastPartners = ["TBC", "Azam TV", "ZUKU", "UpendoTV"]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
@@ -55,13 +94,24 @@ export default function AboutPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-16 text-center">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">About Kasome</h1>
-          <p className="text-xl text-gray-600 leading-relaxed">
-            Kasome makes high-quality lessons available to students via their mobile devices
-            <br />
-            Safe access to evening or after-school
+      <section className="relative py-20 overflow-hidden">
+        <div
+          className="absolute inset-0 bg-gradient-to-r from-green-600 to-green-800"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fillRule='evenodd'%3E%3Cg fill='%23ffffff' fillOpacity='0.1'%3E%3Ccircle cx='7' cy='7' r='7'/%3E%3Ccircle cx='53' cy='53' r='7'/%3E%3Ccircle cx='53' cy='7' r='7'/%3E%3Ccircle cx='7' cy='53' r='7'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundSize: "60px 60px",
+          }}
+        ></div>
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="flex justify-center mb-6">
+            <div className="bg-white bg-opacity-20 rounded-full p-4">
+              <GraduationCap className="h-12 w-12 text-white" />
+            </div>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">About Kasome</h1>
+          <p className="text-xl text-white text-opacity-90 leading-relaxed">
+            Transforming secondary education in Tanzania by making high-quality learning resources accessible,
+            affordable, and effective for every student.
           </p>
         </div>
       </section>
@@ -71,81 +121,270 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">What is Kasome?</h2>
+              <div className="flex items-center mb-6">
+                <div className="bg-green-100 rounded-lg p-3 mr-4">
+                  <BookOpen className="h-8 w-8 text-green-600" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-900">What is Kasome?</h2>
+              </div>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  Kasome is an online video library that students can use as tuition sessions, these videos will be
-                  produced by the project and uploaded to our website and App. The aim is to make secondary studies easy
-                  to be accessible and understood by connecting the very best teachers, who have excellent experience
-                  and are highly professional, to students all over Tanzania, through online video technology.
+                  Kasome is an <strong className="text-gray-900">online video learning library</strong> that provides
+                  students with high-quality tuition sessions anytime, anywhere. Our platform produces and uploads
+                  professionally recorded lessons to our website and mobile app, making secondary education more
+                  accessible and easier to understand.
                 </p>
                 <p>
-                  In 2020, during the COVID-19 pandemic, Kasome was officially recognized and trusted by the Tanzania
-                  Institute of Education (TIE) to support remote learning. Kasome's content was broadcast nationally
-                  through various TV channels such as TBC, Azam TV, ZUKU, Uganda TV, etc, helping the government address
-                  the education crisis during school closures.
+                  By connecting Tanzania's most experienced and professional teachers with students through online video
+                  technology, Kasome helps bridge the education gap and ensures that every learner has the opportunity
+                  to succeed.
                 </p>
+              </div>
+              <div className="mt-6 flex flex-wrap gap-2">
+                <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
+                  <Tv className="h-4 w-4 mr-1" />
+                  Video Library
+                </Badge>
+                <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200">
+                  <Globe className="h-4 w-4 mr-1" />
+                  Online Platform
+                </Badge>
+                <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200">
+                  <GraduationCap className="h-4 w-4 mr-1" />
+                  Expert Teachers
+                </Badge>
               </div>
             </div>
             <div className="relative">
-              <img
-                src="/images/about1.jpg"
-                alt="Kasome team members"
-                className="rounded-lg shadow-lg w-full h-auto"
-              />
+              <div className="bg-gradient-to-br from-green-400 to-blue-500 rounded-2xl p-8 text-white">
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold mb-2">24/7</div>
+                    <div className="text-sm opacity-90">Access Anytime</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold mb-2">100%</div>
+                    <div className="text-sm opacity-90">Mobile Friendly</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold mb-2">HD</div>
+                    <div className="text-sm opacity-90">Video Quality</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold mb-2">TZ</div>
+                    <div className="text-sm opacity-90">Nationwide</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Who are we Section */}
+      {/* Our Story Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="relative">
-              <img
-                src="/images/about2.jpg"
-                alt="Total Startupper Awards 2019"
-                className="rounded-lg shadow-lg w-full h-auto"
-              />
+              <div className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl p-8 text-white">
+                <div className="text-center mb-6">
+                  <div className="text-6xl font-bold mb-2">2020</div>
+                  <div className="text-xl opacity-90">COVID-19 Response</div>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 mr-3 flex-shrink-0" />
+                    <span className="text-sm">Officially recognized by TIE</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 mr-3 flex-shrink-0" />
+                    <span className="text-sm">National TV broadcast</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 mr-3 flex-shrink-0" />
+                    <span className="text-sm">Remote learning support</span>
+                  </div>
+                </div>
+              </div>
             </div>
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Who are we?</h2>
-              <p className="text-gray-600 leading-relaxed">
-                Our success is driven by high level expertise from our supportive team of staff and their commitment
-                towards getting results through the right way by operating responsibly, executing with excellence,
-                applying innovative technologies and capturing new opportunities for creative teaching and learning
-                environments for profitable growth and success of our esteemed students.
-              </p>
+              <div className="flex items-center mb-6">
+                <div className="bg-yellow-100 rounded-lg p-3 mr-4">
+                  <Award className="h-8 w-8 text-yellow-600" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-900">Our Story</h2>
+              </div>
+              <div className="space-y-4 text-gray-600 leading-relaxed">
+                <p>
+                  In <strong className="text-gray-900">2020</strong>, during the COVID-19 pandemic, Kasome was
+                  officially
+                  <strong className="text-green-600">
+                    {" "}
+                    recognized and trusted by the Tanzania Institute of Education (TIE)
+                  </strong>{" "}
+                  to support remote learning.
+                </p>
+                <p>
+                  Our content was broadcast nationally through multiple TV channels—including{" "}
+                  <strong className="text-gray-900">{broadcastPartners.join(", ")}</strong>
+                  —to help the government respond to the education crisis caused by school closures.
+                </p>
+                <p>
+                  This milestone strengthened our mission to provide{" "}
+                  <strong className="text-gray-900">long-term educational solutions</strong> for Tanzanian students
+                  beyond the pandemic.
+                </p>
+              </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Who We Are Section */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <div className="flex justify-center mb-6">
+              <div className="bg-blue-100 rounded-lg p-3">
+                <Users className="h-8 w-8 text-blue-600" />
+              </div>
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Who We Are</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Kasome's success is powered by a dedicated team of experts who are passionate about transforming education
+              in Tanzania.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            <div className="text-center">
+              <div className="bg-green-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Shield className="h-8 w-8 text-green-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Operating Responsibly</h3>
+              <p className="text-gray-600 text-sm">Ethical practices in all our operations</p>
+            </div>
+            <div className="text-center">
+              <div className="bg-blue-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Target className="h-8 w-8 text-blue-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Executing Excellence</h3>
+              <p className="text-gray-600 text-sm">Delivering the highest quality content</p>
+            </div>
+            <div className="text-center">
+              <div className="bg-purple-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Zap className="h-8 w-8 text-purple-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Innovative Technology</h3>
+              <p className="text-gray-600 text-sm">Applying cutting-edge solutions</p>
+            </div>
+            <div className="text-center">
+              <div className="bg-orange-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Lightbulb className="h-8 w-8 text-orange-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Creative Learning</h3>
+              <p className="text-gray-600 text-sm">Inspiring educational environments</p>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 text-center">
+            <p className="text-lg text-gray-700 leading-relaxed">
+              Our commitment is not only to provide knowledge but also to nurture{" "}
+              <strong className="text-green-600">creativity</strong>,{" "}
+              <strong className="text-blue-600">confidence</strong>, and{" "}
+              <strong className="text-purple-600">academic success</strong> for every student who joins Kasome.
+            </p>
           </div>
         </div>
       </section>
 
       {/* Problem We Are Solving Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <div className="flex justify-center mb-6">
+              <div className="bg-red-100 rounded-lg p-3">
+                <AlertTriangle className="h-8 w-8 text-red-600" />
+              </div>
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">The Problem We Are Solving</h2>
+            <p className="text-xl text-gray-600 max-w-4xl mx-auto">
+              For over a decade, Tanzania has faced a critical education crisis that demands immediate action.
+            </p>
+          </div>
+
+          {/* Crisis Statistics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <Card className="border-red-200 bg-red-50">
+              <CardContent className="p-6 text-center">
+                <div className="text-4xl font-bold text-red-600 mb-2">75%</div>
+                <div className="text-lg font-semibold text-gray-900 mb-2">Mathematics Failure Rate</div>
+                <div className="text-gray-600">Out of 500,000 students taking Form Four examinations annually</div>
+              </CardContent>
+            </Card>
+            <Card className="border-orange-200 bg-orange-50">
+              <CardContent className="p-6 text-center">
+                <div className="text-4xl font-bold text-orange-600 mb-2">40,000+</div>
+                <div className="text-lg font-semibold text-gray-900 mb-2">Complete Failures</div>
+                <div className="text-gray-600">Students who fail all subjects and cannot continue education</div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Key Challenges */}
+          <div className="mb-12">
+            <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">Key Contributing Factors</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {challenges.map((challenge, index) => (
+                <Card key={index} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start">
+                      <div className="bg-red-100 rounded-lg p-3 mr-4 flex-shrink-0">
+                        <challenge.icon className="h-6 w-6 text-red-600" />
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-900 mb-2">{challenge.title}</h4>
+                        <p className="text-gray-600">{challenge.description}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Our Solution */}
+          <div className="bg-gradient-to-r from-green-600 to-green-800 rounded-2xl p-8 text-white text-center">
+            <h3 className="text-2xl font-bold mb-4">Kasome's Solution</h3>
+            <p className="text-lg leading-relaxed">
+              At Kasome, we have stepped in to bridge this gap by equipping secondary school students with the
+              resources, lessons, and guidance they need to pass their final examinations—an exam that defines their
+              future.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Mission */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Problem We Are Solving</h2>
-              <p className="text-gray-600 leading-relaxed">
-                For over a decade now out of five hundred 500,000 students more than 75% students sitting for the form
-                four final national examination every year fail and get zero to their Mathematics subject and more than
-                40,000 students fail all the subject and can not continue to further education, this is according to
-                National Examination Council of Tanzania ( NECTA ). Major contributing factors of failure include a
-                shortage of teachers, inaccessibility to tuition centers and after school programs, safety concerns
-                especially for girls, and lack of learning resources. Kasome decided to step up and support children in
-                secondary school and prepare them to pass their final examination since this exam is the back born that
-                determine the future of all children.
-              </p>
-            </div>
-            <div className="relative">
-              <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-green-0 rounded-lg flex items-center justify-center">
-                 <img src="/images/kasomelogo.svg" alt="Kasome Logo" />
+          <div className="text-center mb-12">
+            <div className="flex justify-center mb-6">
+              <div className="bg-green-100 rounded-lg p-3">
+                <Target className="h-8 w-8 text-green-600" />
               </div>
-              <span className="text-2xl font-bold text-white-900">Kasome</span>
-            </Link>
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
+            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 max-w-4xl mx-auto">
+              <p className="text-xl text-gray-800 leading-relaxed">
+                To transform secondary education in Tanzania by making high-quality learning resources
+                <strong className="text-green-600"> accessible</strong>,
+                <strong className="text-blue-600"> affordable</strong>, and
+                <strong className="text-purple-600"> effective</strong> for every student.
+              </p>
+              <div className="mt-6">
+                <Badge className="bg-green-600 text-white text-lg px-4 py-2">Equal Access to Quality Education</Badge>
+              </div>
             </div>
           </div>
         </div>
@@ -172,60 +411,20 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Our Values */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Values</h2>
-            <p className="text-xl text-gray-600">What drives us every day</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="bg-green-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Award className="h-8 w-8 text-green-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Excellence</h3>
-              <p className="text-gray-600">Delivering the highest quality education content</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-blue-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Target className="h-8 w-8 text-blue-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Accessibility</h3>
-              <p className="text-gray-600">Making education available to every student</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-purple-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Lightbulb className="h-8 w-8 text-purple-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Innovation</h3>
-              <p className="text-gray-600">Using technology to transform learning</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-orange-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Heart className="h-8 w-8 text-orange-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Impact</h3>
-              <p className="text-gray-600">Creating lasting change in communities</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Trusted Partners */}
-      <section className="py-16 bg-white">
+      <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Trusted Partners</h2>
             <p className="text-xl text-gray-600">Working together to transform education</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 items-center">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center">
             {partners.map((partner, index) => (
               <div key={index} className="flex justify-center">
                 <img
                   src={partner.logo || "/placeholder.svg"}
                   alt={partner.name}
-                  className="h-12 w-auto   hover:opacity-100 transition-opacity"
+                  className="h-12 w-auto hover:opacity-100 transition-opacity"
                 />
               </div>
             ))}
@@ -264,13 +463,8 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
-              <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-green-0 rounded-lg flex items-center justify-center">
-                 <img src="/images/kasomelogo.svg" alt="Kasome Logo" />
-              </div>
-              <span className="text-2xl font-bold text-white-900">Kasome</span>
-            </Link>
-              <p className="text-gray-400 mb-4">
+              <Logo />
+              <p className="text-gray-400 mb-4 mt-4">
                 Making high-quality education accessible to every student in Tanzania through innovative technology.
               </p>
             </div>

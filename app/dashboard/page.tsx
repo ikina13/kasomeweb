@@ -40,6 +40,7 @@ interface ApiResponse<T> { status: string; message: string; data: T; }
 const classCategories = [
   { label: "I", id: 1 }, { label: "II", id: 2 }, { label: "III", id: 3 },
   { label: "IV", id: 4 }, { label: "V", id: 5 }, { label: "VI", id: 6 },
+  { label: "Swahili Course", id: 9, className: "col-span-1 md:col-span-1" },
   { label: "English Course", id: 7, className: "col-span-1 md:col-span-1" },
   { label: "How to pay", id: 8, className: "col-span-2 md:col-span-1" },
 ]
@@ -74,8 +75,10 @@ export default function DashboardPage() {
     const token = localStorage.getItem("auth_token")
     if (!token) { router.push("/login"); return; }
     const userDataString = localStorage.getItem('user_data');
-    const userData = JSON.parse(userDataString);
-    setUser({ name: userData.name, avatar: "/placeholder-user.jpg" })
+    if (userDataString) {
+      const userData = JSON.parse(userDataString);
+      setUser({ name: userData.name, avatar: "/placeholder-user.jpg" })
+    }
     fetchInitialCourses();
     fetchMyCourses();
   }, [router])
@@ -143,7 +146,7 @@ export default function DashboardPage() {
   }
 
   // --- EVENT HANDLERS ---
-  const handleLogout = () => { localStorage.removeItem("auth_token"); router.push("/login"); }
+  const handleLogout = () => { localStorage.removeItem("auth_token"); localStorage.removeItem("user_data"); router.push("/login"); }
 
   const resetAllFilters = () => {
     setSelectedClassId(null); setSelectedSubjectId(null);
@@ -198,7 +201,12 @@ export default function DashboardPage() {
     <Card className="hover:shadow-lg transition-shadow bg-white flex flex-col">
       <CardHeader className="p-0">
         <Link href={`/course/${course.id}`} className="block relative group">
-          <img src={course.thumbnail.startsWith("sample-") ? `/placeholder.svg?h=200&w=320&text=${encodeURIComponent(course.name)}` : `https://portal.kasome.com/storage/${course.thumbnail}`} alt={course.name} className="w-full h-48 object-cover rounded-t-lg" onError={(e) => { (e.target as HTMLImageElement).src = `/placeholder.svg?h=200&w=320&text=${encodeURIComponent(course.name)}` }} />
+          <img
+            src={course.thumbnail?.startsWith("sample-") ? `/placeholder.svg?h=200&w=320&text=${encodeURIComponent(course.name)}` : `https://portal.kasome.com/storage/${course.thumbnail}`}
+            alt={course.name}
+            className="w-full h-48 object-cover rounded-t-lg"
+            onError={(e) => { (e.target as HTMLImageElement).src = `/placeholder.svg?h=200&w=320&text=${encodeURIComponent(course.name)}` }}
+          />
           <Badge className="absolute top-2 right-2 bg-white text-black">{course.price === 0 ? "Free" : `TSh ${course.price.toLocaleString()}`}</Badge>
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-opacity duration-300 flex items-center justify-center"><Play className="h-12 w-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" /></div>
         </Link>
@@ -275,7 +283,7 @@ export default function DashboardPage() {
           </div>
         </div>
         {subjectsLoading ? <div className="text-center py-12"><Loader2 className="h-8 w-8 animate-spin text-green-600 mx-auto" /></div> :
-         subjectsError ? <div className="text-center py-12 text-red-600 bg-red-50 p-4 rounded-md">{subjectsError}</div> : (
+          subjectsError ? <div className="text-center py-12 text-red-600 bg-red-50 p-4 rounded-md">{subjectsError}</div> : (
           <div className="space-y-3">
             {subjects.length > 0 ? subjects.map(subject => (
               <Card key={subject.id} className="hover:shadow-lg hover:border-green-500 border-2 border-transparent transition-all cursor-pointer" onClick={() => handleSelectSubject(subject.id)}>
@@ -303,7 +311,7 @@ export default function DashboardPage() {
           </div>
         </div>
         {coursesLoading ? <div className="text-center py-12"><Loader2 className="h-8 w-8 animate-spin text-green-600 mx-auto" /></div> :
-         error ? <div className="text-center py-12 text-red-600 bg-red-50 p-4 rounded-md">{error}</div> : (
+          error ? <div className="text-center py-12 text-red-600 bg-red-50 p-4 rounded-md">{error}</div> : (
           searchFilteredCourses.length > 0 ? (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -316,7 +324,7 @@ export default function DashboardPage() {
       </div>
     </section>
   )
-  
+
   if (pageLoading) {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -341,7 +349,7 @@ export default function DashboardPage() {
                 <>
                   <Avatar><AvatarImage src={user.avatar} alt={user.name} /><AvatarFallback>{user.name?.split(" ").map((n: string) => n[0]).join("")}</AvatarFallback></Avatar>
                   <span className="hidden md:block text-sm font-medium">{user.name}</span>
-                  
+
                   <Button variant="ghost" size="sm" onClick={handleLogout}><LogOut className="h-4 w-4" /></Button>
                 </>
               )}
@@ -357,8 +365,8 @@ export default function DashboardPage() {
               <p className="text-xl opacity-90">Continue your learning journey</p>
             </div>
             <div className="mt-6 md:mt-0 grid grid-cols-3 gap-6 text-center">
-              <div><div className="text-2xl font-bold">{initialCourses.length}</div><div className="text-sm opacity-75">Courses</div></div>
-           
+              <div><div className="text-2xl font-bold">{initialCourses.length}</div><div className="text-sm opacity-75">Total Courses</div></div>
+              <div><div className="text-2xl font-bold">{myCourses.length}</div><div className="text-sm opacity-75">My Courses</div></div>
             </div>
           </div>
         </div>
