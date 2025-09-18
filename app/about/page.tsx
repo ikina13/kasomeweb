@@ -1,7 +1,11 @@
+"use client"
+
 import Link from "next/link"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Users,
   BookOpen,
@@ -10,6 +14,8 @@ import {
   Award,
   Target,
   Lightbulb,
+  TrendingUp,
+  Heart,
   Shield,
   Zap,
   Globe,
@@ -20,7 +26,12 @@ import {
 } from "lucide-react"
 import Logo from "@/components/Logo"
 
+interface UserData { name: string; email: string; phone: string; photo_url?: string; }
+ 
 export default function AboutPage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<UserData | null>(null);
+
   const stats = [
     { icon: Users, label: "Students Reached", value: "1502+", color: "text-blue-600" },
     { icon: BookOpen, label: "Video Lessons", value: "2250+", color: "text-green-600" },
@@ -52,53 +63,62 @@ export default function AboutPage() {
   ]
 
   const partners = [
-    { name: "Ministry of Education", logo: "/images/partner1.png" },
-    { name: "UKaid", logo: "/images/partner2.png" },
-    { name: "Ford Foundation", logo: "/images/partner3.png" },
-    { name: "USAID", logo: "/images/partner4.png" },
-    { name: "Zuku", logo: "/images/partner5.png" },
-  ]
+    { name: "Ministry of Education", logo: "/images/partner1.png" },{ name: "Ford Foundation", logo: "/images/partner3.png" }, { name: "UKaid", logo: "/images/partner2.png" }, { name: "USAID", logo: "/images/partner4.jpeg" }, { name: "Zuku", logo: "/images/partner5.png" },{ name: "upendo", logo: "/images/partner6.png" },
+]
+
 
   const broadcastPartners = ["TBC", "Azam TV", "ZUKU", "UpendoTV"]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+       <nav className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Logo />
-            </div>
-            <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="text-gray-600 hover:text-yellow-500">
+            <Logo />
+            <div className="hidden md:flex items-center space-x-8">
+              <Link href="/" className="text-gray-700 hover:text-yellow-600 font-medium">
                 Home
-              </Link>
-              <Link href="/about" className="text-gray-900 hover:text-yellow-500">
+              </Link> 
+              <Link href="/about" className="text-yellow-700  font-medium">
                 About us
               </Link>
-              <Link href="/contact" className="text-gray-600 hover:text-yellow-500">
+              <Link href="/books" className="text-gray-700 hover:text-yellow-600 font-medium">
+                Books
+              </Link>
+              <Link href="/gallery" className="text-gray-700 hover:text-yellow-600 font-medium">
+                Gallery
+              </Link>
+                <Link href="/donate" className="text-gray-700 hover:text-yellow-600 font-medium">
+                Donate
+              </Link>
+              <Link href="/contact" className="text-gray-700 hover:text-yellow-600 font-medium">
                 Contact
-              </Link>
-              <Link href="/login" className="text-gray-600 hover:text-yellow-500">
-                Login
-              </Link>
-            </nav>
-            <div className="flex items-center space-x-4">
-              <Link href="/register">
-                <Button className="bg-green-600 hover:bg-green-700 text-white">Get Started</Button>
-              </Link>
+              </Link>       
+            </div>
+             <div className="flex items-center space-x-4">
+              {isLoggedIn ? (
+                <>
+                  {user && (<Avatar><AvatarImage src={user.photo_url || "/placeholder-user.jpg"} alt={user.name} /><AvatarFallback>{user.name?.split(' ').map(n => n[0]).join('') || 'JD'}</AvatarFallback></Avatar>)}
+                  <Button asChild className="bg-green-600 hover:bg-green-700 text-white"><Link href="/dashboard">Go to Dashboard</Link></Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" asChild><Link href="/login">Sign In</Link></Button>
+                  <Button asChild className="bg-green-600 hover:bg-green-700 text-white"><Link href="/register">Get Started</Link></Button>
+                </>
+              )}
             </div>
           </div>
         </div>
-      </header>
+      </nav>
 
       {/* Hero Section */}
-      <section className="relative py-20 overflow-hidden">
+      <section className="relative py-20 bg-gradient-to-r from-green-600 to-green-800 text-white overflow-hidden">
         <div
           className="absolute inset-0 bg-gradient-to-r from-green-600 to-green-800"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fillRule='evenodd'%3E%3Cg fill='%23ffffff' fillOpacity='0.1'%3E%3Ccircle cx='7' cy='7' r='7'/%3E%3Ccircle cx='53' cy='53' r='7'/%3E%3Ccircle cx='53' cy='7' r='7'/%3E%3Ccircle cx='7' cy='53' r='7'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundImage: `url("")`,
             backgroundSize: "60px 60px",
           }}
         ></div>
@@ -241,151 +261,250 @@ export default function AboutPage() {
       </section>
 
       {/* Who We Are Section */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-16 bg-gradient-to-r from-blue-50 to-green-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <div className="flex justify-center mb-6">
-              <div className="bg-blue-100 rounded-lg p-3">
-                <Users className="h-8 w-8 text-blue-600" />
+              <div className="bg-green-100 rounded-full p-3">
+                <Users className="h-8 w-8 text-green-600" />
               </div>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Who We Are</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8">Who We Are</h2>
+            <p className="text-lg text-gray-700 leading-relaxed max-w-4xl mx-auto mb-12">
               Kasome's success is powered by a dedicated team of experts who are passionate about transforming education
-              in Tanzania.
+              in Tanzania. We believe in operating responsibly, executing with excellence, applying innovative
+              technologies, and seizing opportunities to create inspiring learning environments.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            <div className="text-center">
-              <div className="bg-green-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Shield className="h-8 w-8 text-green-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Operating Responsibly</h3>
-              <p className="text-gray-600 text-sm">Ethical practices in all our operations</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-blue-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Target className="h-8 w-8 text-blue-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Executing Excellence</h3>
-              <p className="text-gray-600 text-sm">Delivering the highest quality content</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-purple-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Zap className="h-8 w-8 text-purple-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Innovative Technology</h3>
-              <p className="text-gray-600 text-sm">Applying cutting-edge solutions</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-orange-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Lightbulb className="h-8 w-8 text-orange-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Creative Learning</h3>
-              <p className="text-gray-600 text-sm">Inspiring educational environments</p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="bg-green-100 rounded-full p-3 w-fit mx-auto mb-4">
+                  <Shield className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Responsible</h3>
+                <p className="text-sm text-gray-600">Operating with integrity and accountability</p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="bg-blue-100 rounded-full p-3 w-fit mx-auto mb-4">
+                  <Target className="h-8 w-8 text-blue-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Excellence</h3>
+                <p className="text-sm text-gray-600">Executing with the highest standards</p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="bg-purple-100 rounded-full p-3 w-fit mx-auto mb-4">
+                  <Zap className="h-8 w-8 text-purple-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Innovation</h3>
+                <p className="text-sm text-gray-600">Applying cutting-edge technologies</p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="bg-orange-100 rounded-full p-3 w-fit mx-auto mb-4">
+                  <TrendingUp className="h-8 w-8 text-orange-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Opportunity</h3>
+                <p className="text-sm text-gray-600">Creating inspiring learning environments</p>
+              </CardContent>
+            </Card>
           </div>
 
-          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 text-center">
-            <p className="text-lg text-gray-700 leading-relaxed">
-              Our commitment is not only to provide knowledge but also to nurture{" "}
-              <strong className="text-green-600">creativity</strong>,{" "}
-              <strong className="text-blue-600">confidence</strong>, and{" "}
-              <strong className="text-purple-600">academic success</strong> for every student who joins Kasome.
+          <div className="text-center mt-12">
+            <p className="text-lg text-gray-700 leading-relaxed max-w-4xl mx-auto">
+              Our commitment is not only to provide knowledge but also to nurture creativity, confidence, and academic
+              success for every student who joins Kasome.
             </p>
           </div>
         </div>
       </section>
 
       {/* Problem We Are Solving Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-16 bg-gradient-to-r from-red-50 to-orange-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <div className="flex justify-center mb-6">
-              <div className="bg-red-100 rounded-lg p-3">
+              <div className="bg-red-100 rounded-full p-3">
                 <AlertTriangle className="h-8 w-8 text-red-600" />
               </div>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">The Problem We Are Solving</h2>
-            <p className="text-xl text-gray-600 max-w-4xl mx-auto">
-              For over a decade, Tanzania has faced a critical education crisis that demands immediate action.
-            </p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-8">The Problem We Are Solving</h2>
           </div>
 
-          {/* Crisis Statistics */}
+          {/* Statistics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <Card className="border-red-200 bg-red-50">
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl font-bold text-red-600 mb-2">75%</div>
-                <div className="text-lg font-semibold text-gray-900 mb-2">Mathematics Failure Rate</div>
-                <div className="text-gray-600">Out of 500,000 students taking Form Four examinations annually</div>
+            <Card className="bg-white shadow-lg border-l-4 border-red-500">
+              <CardContent className="p-8">
+                <div className="flex items-center mb-4">
+                  <div className="bg-red-100 rounded-full p-3 mr-4">
+                    <TrendingUp className="h-8 w-8 text-red-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-3xl font-bold text-red-600">75%</h3>
+                    <p className="text-gray-600">Mathematics Failure Rate</p>
+                  </div>
+                </div>
+                <p className="text-gray-700">
+                  For over a decade, more than 75% of the 500,000 students sitting for Tanzania's national Form Four
+                  examinations have failed Mathematics.
+                </p>
               </CardContent>
             </Card>
-            <Card className="border-orange-200 bg-orange-50">
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl font-bold text-orange-600 mb-2">40,000+</div>
-                <div className="text-lg font-semibold text-gray-900 mb-2">Complete Failures</div>
-                <div className="text-gray-600">Students who fail all subjects and cannot continue education</div>
+
+            <Card className="bg-white shadow-lg border-l-4 border-orange-500">
+              <CardContent className="p-8">
+                <div className="flex items-center mb-4">
+                  <div className="bg-orange-100 rounded-full p-3 mr-4">
+                    <AlertTriangle className="h-8 w-8 text-orange-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-3xl font-bold text-orange-600">40,000+</h3>
+                    <p className="text-gray-600">Complete Failures</p>
+                  </div>
+                </div>
+                <p className="text-gray-700">
+                  Over 40,000 students fail all subjects each year—making it impossible for them to continue their
+                  education.
+                </p>
               </CardContent>
             </Card>
+          </div>
+
+          <div className="text-center mb-8">
+            <p className="text-sm text-gray-600 italic">Source: NECTA</p>
           </div>
 
           {/* Key Challenges */}
-          <div className="mb-12">
-            <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">Key Contributing Factors</h3>
+          <div className="mb-8">
+            <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">Key Challenges Behind This Crisis</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {challenges.map((challenge, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-start">
-                      <div className="bg-red-100 rounded-lg p-3 mr-4 flex-shrink-0">
-                        <challenge.icon className="h-6 w-6 text-red-600" />
-                      </div>
-                      <div>
-                        <h4 className="text-lg font-semibold text-gray-900 mb-2">{challenge.title}</h4>
-                        <p className="text-gray-600">{challenge.description}</p>
-                      </div>
+              <Card className="bg-white hover:shadow-lg transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-red-100 rounded-full p-2 flex-shrink-0">
+                      <Users className="h-6 w-6 text-red-600" />
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-2">Shortage of qualified teachers</h4>
+                      <p className="text-gray-600 text-sm">
+                        Limited number of experienced educators to serve the growing student population
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-white hover:shadow-lg transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-orange-100 rounded-full p-2 flex-shrink-0">
+                      <GraduationCap className="h-6 w-6 text-orange-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-2">Inaccessibility to tuition centers</h4>
+                      <p className="text-gray-600 text-sm">
+                        Limited access to after-school programs and additional learning support
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-white hover:shadow-lg transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-purple-100 rounded-full p-2 flex-shrink-0">
+                      <Shield className="h-6 w-6 text-purple-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-2">Safety concerns, especially for girls</h4>
+                      <p className="text-gray-600 text-sm">
+                        Security issues preventing students from accessing educational opportunities
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-white hover:shadow-lg transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-blue-100 rounded-full p-2 flex-shrink-0">
+                      <BookOpen className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-2">Lack of affordable learning resources</h4>
+                      <p className="text-gray-600 text-sm">
+                        Limited access to quality, affordable educational materials and resources
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
 
-          {/* Our Solution */}
-          <div className="bg-gradient-to-r from-green-600 to-green-800 rounded-2xl p-8 text-white text-center">
-            <h3 className="text-2xl font-bold mb-4">Kasome's Solution</h3>
-            <p className="text-lg leading-relaxed">
-              At Kasome, we have stepped in to bridge this gap by equipping secondary school students with the
-              resources, lessons, and guidance they need to pass their final examinations—an exam that defines their
-              future.
-            </p>
-          </div>
+          <Card className="bg-green-50 border-l-4 border-green-500">
+            <CardContent className="p-8">
+              <div className="flex items-start space-x-4">
+                <div className="bg-green-100 rounded-full p-3 flex-shrink-0">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">Our Solution</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    At Kasome, we have stepped in to bridge this gap by equipping secondary school students with the
+                    resources, lessons, and guidance they need to pass their final examinations—an exam that defines
+                    their future.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
       {/* Our Mission */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="flex justify-center mb-6">
-              <div className="bg-green-100 rounded-lg p-3">
-                <Target className="h-8 w-8 text-green-600" />
-              </div>
+      <section className="py-16 bg-gradient-to-r from-green-600 to-blue-600 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="flex justify-center mb-6">
+            <div className="bg-white bg-opacity-20 rounded-full p-4">
+              <Heart className="h-12 w-12 text-white" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
-            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 max-w-4xl mx-auto">
-              <p className="text-xl text-gray-800 leading-relaxed">
-                To transform secondary education in Tanzania by making high-quality learning resources
-                <strong className="text-green-600"> accessible</strong>,
-                <strong className="text-blue-600"> affordable</strong>, and
-                <strong className="text-purple-600"> effective</strong> for every student.
-              </p>
-              <div className="mt-6">
-                <Badge className="bg-green-600 text-white text-lg px-4 py-2">Equal Access to Quality Education</Badge>
-              </div>
+          </div>
+          <h2 className="text-3xl font-bold mb-8">Our Mission</h2>
+          <p className="text-xl leading-relaxed mb-8">
+            To transform secondary education in Tanzania by making high-quality learning resources accessible,
+            affordable, and effective for every student.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white bg-opacity-10 rounded-lg p-6">
+              <Globe className="h-8 w-8 mx-auto mb-3" />
+              <h3 className="font-semibold mb-2">Accessible</h3>
+              <p className="text-sm opacity-90">Available anytime, anywhere</p>
             </div>
+            <div className="bg-white bg-opacity-10 rounded-lg p-6">
+              <Heart className="h-8 w-8 mx-auto mb-3" />
+              <h3 className="font-semibold mb-2">Affordable</h3>
+              <p className="text-sm opacity-90">Cost-effective for all families</p>
+            </div>
+            <div className="bg-white bg-opacity-10 rounded-lg p-6">
+              <Target className="h-8 w-8 mx-auto mb-3" />
+              <h3 className="font-semibold mb-2">Effective</h3>
+              <p className="text-sm opacity-90">Proven results and outcomes</p>
+            </div>
+          </div>
+          <div className="mt-8">
+            <p className="text-lg font-medium">Equal access to quality education for every student</p>
           </div>
         </div>
       </section>
@@ -412,25 +531,22 @@ export default function AboutPage() {
       </section>
 
       {/* Trusted Partners */}
-      <section className="py-16">
+      <section className="py-16 bg-green-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Trusted Partners</h2>
             <p className="text-xl text-gray-600">Working together to transform education</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
             {partners.map((partner, index) => (
               <div key={index} className="flex justify-center">
-                <img
-                  src={partner.logo || "/placeholder.svg"}
-                  alt={partner.name}
-                  className="h-12 w-auto hover:opacity-100 transition-opacity"
-                />
+                <img src={partner.logo || "/placeholder.svg"} alt={partner.name} className="h-12 w-auto hover:opacity-100 transition-opacity" />
               </div>
             ))}
           </div>
         </div>
       </section>
+
 
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-r from-green-600 to-green-800 text-white">
@@ -459,64 +575,15 @@ export default function AboutPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+       <footer className="bg-gray-800 text-white py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="col-span-1 md:col-span-2">
-              <Logo />
-              <p className="text-gray-400 mb-4 mt-4">
-                Making high-quality education accessible to every student in Tanzania through innovative technology.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/" className="text-gray-400 hover:text-white">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about" className="text-gray-400 hover:text-white">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact" className="text-gray-400 hover:text-white">
-                    Contact
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/login" className="text-gray-400 hover:text-white">
-                    Login
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Support</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/contact" className="text-gray-400 hover:text-white">
-                    Help Center
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/" className="text-gray-400 hover:text-white">
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/" className="text-gray-400 hover:text-white">
-                    Terms of Service
-                  </Link>
-                </li>
-              </ul>
-            </div>
+            <div><Link href="/" className="flex items-center space-x-2"><div className="w-10 h-10 bg-green-0 rounded-lg flex items-center justify-center"><img src="/images/kasomelogo.svg" alt="Kasome Logo" /></div><span className="text-2xl font-bold text-white">Kasome</span></Link><p className="text-gray-400 mt-4">Empowering students across Tanzania with quality online education.</p></div>
+            <div><h3 className="text-lg font-semibold mb-4">Courses</h3><ul className="space-y-2 text-gray-400"><li><Link href="/">Mathematics</Link></li><li><Link href="/courses/science">Science</Link></li><li><Link href="/">Languages</Link></li><li><Link href="/">Technology</Link></li></ul></div>
+            <div><h3 className="text-lg font-semibold mb-4">Support</h3><ul className="space-y-2 text-gray-400"><li><Link href="/contact">Help Center</Link></li><li><Link href="/contact">Contact Us</Link></li><li><Link href="/">FAQ</Link></li><li><Link href="/">Community</Link></li></ul></div>
+            <div><h3 className="text-lg font-semibold mb-4">Company</h3><ul className="space-y-2 text-gray-400"><li><Link href="/about">About Us</Link></li><li><Link href="/">Careers</Link></li><li><Link href="/privacy">Privacy Policy</Link></li><li><Link href="/">Terms of Service</Link></li></ul></div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-            <p className="text-gray-400">© 2024 Kasome. All rights reserved.</p>
-          </div>
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400"><p>&copy; {new Date().getFullYear()} Kasome. All rights reserved.</p></div>
         </div>
       </footer>
     </div>

@@ -67,26 +67,31 @@ export default function SwahiliBooksPage() {
 
       {/* Header -- UPDATED */}
       <div
-        className="relative py-16"
+        className="relative py-20 bg-gradient-to-r from-green-600 to-green-800 text-white"
         style={{
-          backgroundImage: "url('/images/crback.png')",
-        //  backgroundSize: 'full',
-           backgroundSize: 'auto 100%', 
-    
-    // This ensures the image starts from the top
-    backgroundPosition: 'top center', 
-    
-    // This will repeat the image vertically if the section is taller than the image
-    backgroundRepeat: 'repeat', 
-          backgroundColor: "#16a34a", // Fallback color (Tailwind's green-600)
-         // backgroundRepeat: 'repeat',
-        }}
+          backgroundImage: "url('')",
+          //  backgroundSize: 'full',
+            backgroundSize: 'auto 100%', 
+      
+          // This ensures the image starts from the top
+          backgroundPosition: 'top center', 
+          
+          // This will repeat the image vertically if the section is taller than the image
+          backgroundRepeat: 'repeat', 
+                backgroundColor: "#16a34a", // Fallback color (Tailwind's green-600)
+              // backgroundRepeat: 'repeat',
+              }}
       >
         {/* This div adds a dark overlay for better text readability */}
         <div className="absolute inset-0  opacity-40"></div>
         
         {/* Your content needs to be relative to sit on top of the overlay */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="flex justify-center mb-6">
+            <div className="bg-white bg-opacity-20 rounded-full p-4">
+              <BookOpen className="h-12 w-12 text-white" />
+            </div>
+          </div>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Swahili Books Collection</h1>
           <p className="text-xl text-green-100 max-w-2xl mx-auto">
             Discover our comprehensive collection of Swahili educational books for all learning levels

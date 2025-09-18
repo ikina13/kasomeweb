@@ -277,7 +277,17 @@ export default function HomePage() {
             <Logo />
             <div className="hidden md:flex items-center space-x-8">
               <Link href="/about" className="text-gray-600 hover:text-gray-900">About us</Link>
+               <Link href="/books" className="text-gray-600 hover:text-gray-900">
+                Books
+              </Link>
+               <Link href="/gallery" className="text-gray-600 hover:text-gray-900">
+                Gallery
+              </Link>
+               <Link href="/donate" className="text-gray-600 hover:text-gray-900">
+                Donate
+              </Link>
               <Link href="/contact" className="text-gray-600 hover:text-gray-900">Contact</Link>
+
             </div>
             <div className="flex items-center space-x-4">
               {isLoggedIn ? (

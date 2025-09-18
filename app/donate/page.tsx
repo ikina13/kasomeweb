@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Heart,
   ArrowLeft,
@@ -101,7 +102,11 @@ const initiatives = [
   },
 ]
 
+interface UserData { name: string; email: string; phone: string; photo_url?: string; }
+
 export default function DonatePage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<UserData | null>(null);
   const [selectedBook, setSelectedBook] = useState<(typeof donationBooks)[0] | null>(null)
   const [selectedAmount, setSelectedAmount] = useState("100")
   const [customAmount, setCustomAmount] = useState("")
@@ -145,21 +150,47 @@ export default function DonatePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b">
+         <nav className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Logo />
-            <div className="flex items-center space-x-4">
-              <Link href="/">
-                <Button variant="ghost" className="text-gray-700 hover:text-green-600">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to Home
-                </Button>
+            <div className="hidden md:flex items-center space-x-8">
+              <Link href="/" className="text-gray-700 hover:text-yellow-600 font-medium">
+                Home
+              </Link> 
+              <Link href="/about" className="text-gray-700 hover:text-yellow-600 font-medium">
+                About us
               </Link>
+              <Link href="/books" className="text-gray-700 hover:text-yellow-600 font-medium">
+                Books
+              </Link>
+              <Link href="/gallery" className="text-gray-700 hover:text-yellow-600 font-medium">
+                Gallery
+              </Link>
+                <Link href="/donate" className="text-yellow-700">
+                Donate
+              </Link>
+              <Link href="/contact" className="text-gray-700 hover:text-yellow-600 font-medium">
+                Contact
+              </Link>       
+            </div>
+             <div className="flex items-center space-x-4">
+              {isLoggedIn ? (
+                <>
+                  {user && (<Avatar><AvatarImage src={user.photo_url || "/placeholder-user.jpg"} alt={user.name} /><AvatarFallback>{user.name?.split(' ').map(n => n[0]).join('') || 'JD'}</AvatarFallback></Avatar>)}
+                  <Button asChild className="bg-green-600 hover:bg-green-700 text-white"><Link href="/dashboard">Go to Dashboard</Link></Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" asChild><Link href="/login">Sign In</Link></Button>
+                  <Button asChild className="bg-green-600 hover:bg-green-700 text-white"><Link href="/register">Get Started</Link></Button>
+                </>
+              )}
             </div>
           </div>
         </div>
       </nav>
+
 
       {/* Hero Section */}
       <div className="relative py-20 bg-green-700">
@@ -573,75 +604,15 @@ export default function DonatePage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div>
-              <Logo className="mb-4" />
-              <p className="text-gray-400 mb-4">Empowering learners worldwide with high-quality online education.</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/about" className="text-gray-400 hover:text-white transition-colors">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dashboard" className="text-gray-400 hover:text-white transition-colors">
-                    Courses
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/books" className="text-gray-400 hover:text-white transition-colors">
-                    Books
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Support</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Help Center
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Terms of Service
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                    FAQ
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>Email: support@kasome.com</li>
-                <li>Phone: +255 123 456 789</li>
-                <li>Address: Dar es Salaam, Tanzania</li>
-              </ul>
-            </div>
+      <footer className="bg-gray-800 text-white py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div><Link href="/" className="flex items-center space-x-2"><div className="w-10 h-10 bg-green-0 rounded-lg flex items-center justify-center"><img src="/images/kasomelogo.svg" alt="Kasome Logo" /></div><span className="text-2xl font-bold text-white">Kasome</span></Link><p className="text-gray-400 mt-4">Empowering students across Tanzania with quality online education.</p></div>
+            <div><h3 className="text-lg font-semibold mb-4">Courses</h3><ul className="space-y-2 text-gray-400"><li><Link href="/">Mathematics</Link></li><li><Link href="/courses/science">Science</Link></li><li><Link href="/">Languages</Link></li><li><Link href="/">Technology</Link></li></ul></div>
+            <div><h3 className="text-lg font-semibold mb-4">Support</h3><ul className="space-y-2 text-gray-400"><li><Link href="/contact">Help Center</Link></li><li><Link href="/contact">Contact Us</Link></li><li><Link href="/">FAQ</Link></li><li><Link href="/">Community</Link></li></ul></div>
+            <div><h3 className="text-lg font-semibold mb-4">Company</h3><ul className="space-y-2 text-gray-400"><li><Link href="/about">About Us</Link></li><li><Link href="/">Careers</Link></li><li><Link href="/privacy">Privacy Policy</Link></li><li><Link href="/">Terms of Service</Link></li></ul></div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-            <p className="text-gray-400">© 2024 Kasome. All rights reserved.</p>
-          </div>
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400"><p>&copy; {new Date().getFullYear()} Kasome. All rights reserved.</p></div>
         </div>
       </footer>
     </div>

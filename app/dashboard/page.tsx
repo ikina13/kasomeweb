@@ -37,13 +37,18 @@ interface Course { id: number; name: string; status: string; thumbnail: string; 
 interface ApiResponse<T> { status: string; message: string; data: T; }
 
 // --- STATIC DATA & MAPPINGS ---
+// ✨ CHANGE IS HERE ✨
+// We've updated the className for the last three items.
+// col-span-3 makes them take the full width on the smallest screen size (which has 3 columns).
+// md:col-span-1 makes them take up a single column on medium screens and larger.
 const classCategories = [
   { label: "I", id: 1 }, { label: "II", id: 2 }, { label: "III", id: 3 },
   { label: "IV", id: 4 }, { label: "V", id: 5 }, { label: "VI", id: 6 },
-  { label: "Swahili Course", id: 9, className: "col-span-1 md:col-span-1" },
-  { label: "English Course", id: 7, className: "col-span-1 md:col-span-1" },
-  { label: "How to pay", id: 8, className: "col-span-2 md:col-span-1" },
+  { label: "Swahili Course", id: 9, className: "col-span-3 md:col-span-1" },
+  { label: "English Course", id: 7, className: "col-span-3 md:col-span-1" },
+  { label: "How to pay", id: 8, className: "col-span-3 md:col-span-1" },
 ]
+
 const classIdToLabelMap = new Map(classCategories.map(c => [c.id, c.label]))
 const COURSES_PER_PAGE = 8;
 
@@ -382,6 +387,19 @@ export default function DashboardPage() {
       <ViewSwitcher />
       {activeView === 'all' && (showSubjectsList ? <SubjectList /> : <><CategorySelector /><CourseList /></>)}
       {activeView === 'my' && <MyCoursesList />}
+
+       {/* Footer */}
+            <footer className="bg-gray-800 text-white py-12">
+              <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                  <div><Link href="/" className="flex items-center space-x-2"><div className="w-10 h-10 bg-green-0 rounded-lg flex items-center justify-center"><img src="/images/kasomelogo.svg" alt="Kasome Logo" /></div><span className="text-2xl font-bold text-white">Kasome</span></Link><p className="text-gray-400 mt-4">Empowering students across Tanzania with quality online education.</p></div>
+                  <div><h3 className="text-lg font-semibold mb-4">Courses</h3><ul className="space-y-2 text-gray-400"><li><Link href="/">Mathematics</Link></li><li><Link href="/courses/science">Science</Link></li><li><Link href="/">Languages</Link></li><li><Link href="/">Technology</Link></li></ul></div>
+                  <div><h3 className="text-lg font-semibold mb-4">Support</h3><ul className="space-y-2 text-gray-400"><li><Link href="/contact">Help Center</Link></li><li><Link href="/contact">Contact Us</Link></li><li><Link href="/">FAQ</Link></li><li><Link href="/">Community</Link></li></ul></div>
+                  <div><h3 className="text-lg font-semibold mb-4">Company</h3><ul className="space-y-2 text-gray-400"><li><Link href="/about">About Us</Link></li><li><Link href="/">Careers</Link></li><li><Link href="/privacy">Privacy Policy</Link></li><li><Link href="/">Terms of Service</Link></li></ul></div>
+                </div>
+                <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400"><p>&copy; {new Date().getFullYear()} Kasome. All rights reserved.</p></div>
+              </div>
+            </footer>
     </div>
   )
 }

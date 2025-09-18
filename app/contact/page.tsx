@@ -1,15 +1,19 @@
 "use client"
 
+import { useState } from "react"
 import type React from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Phone, Mail, MapPin, Facebook, Instagram, MessageCircle, Clock } from "lucide-react"
 import Logo from "@/components/Logo"
- 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+interface UserData { name: string; email: string; phone: string; photo_url?: string; }
 
 export default function ContactPage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<UserData | null>(null);
 
   const contactInfo = [
     {
@@ -65,34 +69,46 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+       <nav className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Logo />
-            </div>
-            <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="text-gray-600 hover:text-yellow-500">
+            <Logo />
+            <div className="hidden md:flex items-center space-x-8">
+              <Link href="/" className="text-gray-700 hover:text-yellow-600 font-medium">
                 Home
-              </Link>
-              <Link href="/about" className="text-gray-600 hover:text-yellow-500">
+              </Link> 
+              <Link href="/about" className="text-gray-700 hover:text-yellow-600 font-medium">
                 About us
               </Link>
-              <Link href="/contact" className="text-gray-900 hover:text-yellow-500">
+              <Link href="/books" className="text-gray-700 hover:text-yellow-600 font-medium">
+                Books
+              </Link>
+              <Link href="/gallery" className="text-gray-700 hover:text-yellow-600 font-medium">
+                Gallery
+              </Link>
+                <Link href="/donate" className="text-gray-700 hover:text-yellow-600 font-medium">
+                Donate
+              </Link>
+              <Link href="/contact" className="text-yellow-700  font-medium">
                 Contact
-              </Link>
-              <Link href="/login" className="text-gray-600 hover:text-yellow-500">
-                Login
-              </Link>
-            </nav>
-            <div className="flex items-center space-x-4">
-              <Link href="/register">
-                <Button className="bg-green-600 hover:bg-green-700 text-white">Get Started</Button>
-              </Link>
+              </Link>       
+            </div>
+             <div className="flex items-center space-x-4">
+              {isLoggedIn ? (
+                <>
+                  {user && (<Avatar><AvatarImage src={user.photo_url || "/placeholder-user.jpg"} alt={user.name} /><AvatarFallback>{user.name?.split(' ').map(n => n[0]).join('') || 'JD'}</AvatarFallback></Avatar>)}
+                  <Button asChild className="bg-green-600 hover:bg-green-700 text-white"><Link href="/dashboard">Go to Dashboard</Link></Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" asChild><Link href="/login">Sign In</Link></Button>
+                  <Button asChild className="bg-green-600 hover:bg-green-700 text-white"><Link href="/register">Get Started</Link></Button>
+                </>
+              )}
             </div>
           </div>
         </div>
-      </header>
+      </nav>
 
       {/* Centered Contact Info */}
       <section className="py-20">
