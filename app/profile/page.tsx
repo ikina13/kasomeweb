@@ -183,7 +183,7 @@ export default function ProfilePage() {
               <>
                 <div className="flex items-center space-x-6">
                   <Avatar className="h-24 w-24">
-                    <AvatarImage src={profile.photo_url || "/placeholder.svg?text=AV"} />
+                    <AvatarImage src={"/placeholder.svg?text=AV"} />
                     <AvatarFallback className="text-3xl bg-gray-200">
                       {profile.name?.split(' ').map(n => n[0]).join('')}
                     </AvatarFallback>

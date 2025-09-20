@@ -28,6 +28,14 @@ import {
   Loader2,
   Library,
   LayoutGrid,
+  Menu,
+  X,
+  Home,
+  User,
+  BookOpen,
+  Image as ImageIcon,
+  Heart,
+  Mail,
 } from "lucide-react"
 import Logo from "@/components/Logo"
 
@@ -37,10 +45,6 @@ interface Course { id: number; name: string; status: string; thumbnail: string; 
 interface ApiResponse<T> { status: string; message: string; data: T; }
 
 // --- STATIC DATA & MAPPINGS ---
-// ✨ CHANGE IS HERE ✨
-// We've updated the className for the last three items.
-// col-span-3 makes them take the full width on the smallest screen size (which has 3 columns).
-// md:col-span-1 makes them take up a single column on medium screens and larger.
 const classCategories = [
   { label: "I", id: 1 }, { label: "II", id: 2 }, { label: "III", id: 3 },
   { label: "IV", id: 4 }, { label: "V", id: 5 }, { label: "VI", id: 6 },
@@ -71,6 +75,7 @@ export default function DashboardPage() {
   const [subjectsLoading, setSubjectsLoading] = useState(false)
   const [subjectsError, setSubjectsError] = useState<string | null>(null)
   const [selectedSubjectId, setSelectedSubjectId] = useState<number | null>(null)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const router = useRouter()
 
   // --- EFFECTS ---
@@ -152,6 +157,8 @@ export default function DashboardPage() {
 
   // --- EVENT HANDLERS ---
   const handleLogout = () => { localStorage.removeItem("auth_token"); localStorage.removeItem("user_data"); router.push("/login"); }
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const handleSidebarClick = () => { setIsSidebarOpen(false); }
 
   const resetAllFilters = () => {
     setSelectedClassId(null); setSelectedSubjectId(null);
@@ -340,21 +347,53 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Mobile Sidebar */}
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out md:hidden ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+          <div className="p-4 flex items-center justify-between border-b">
+              <Logo />
+              <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+                  <X className="h-6 w-6" />
+              </Button>
+          </div>
+          <div className="flex flex-col p-4 space-y-2">
+              <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={handleSidebarClick}><Home className="h-5 w-5" />Home</Link>
+              <Link href="/dashboard" className="flex items-center gap-2 text-green-700 font-semibold bg-green-50 px-4 py-2 rounded-lg" onClick={handleSidebarClick}><LayoutGrid className="h-5 w-5" />Dashboard</Link>
+              <Link href="/about" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={handleSidebarClick}><User className="h-5 w-5" />About Us</Link>
+              <Link href="/books" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={handleSidebarClick}><BookOpen className="h-5 w-5" />Books</Link>
+              <Link href="/gallery" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={handleSidebarClick}><ImageIcon className="h-5 w-5" />Gallery</Link>
+              <Link href="/donate" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={handleSidebarClick}><Heart className="h-5 w-5" />Donate</Link>
+              <Link href="/contact" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={handleSidebarClick}><Mail className="h-5 w-5" />Contact</Link>
+          </div>
+      </div>
+
+      {/* Overlay to close sidebar when clicking outside */}
+      {isSidebarOpen && <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={toggleSidebar} />}
+
+      {/* Header */}
       <header className="bg-white shadow-sm border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center"><Logo /></div>
-            <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="text-gray-600 hover:text-yellow-500">Home</Link>
-              <Link href="/dashboard" className="text-gray-900 hover:text-yellow-500">Dashboard</Link>
-              <Link href="/profile" className="text-gray-600 hover:text-yellow-500">Profile</Link>
+            <div className="flex items-center space-x-4">
+              {/* Mobile menu button */}
+              <Button variant="ghost" size="icon" onClick={toggleSidebar} className="md:hidden">
+                <Menu className="h-6 w-6" />
+              </Button>
+              <Logo />
+            </div>
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link href="/" className="text-gray-600 hover:text-green-700">Home</Link>
+              <Link href="/dashboard" className="text-green-700 font-semibold border-b-2 border-green-700">Dashboard</Link>
+              <Link href="/profile" className="text-gray-600 hover:text-green-700">Profile</Link>
+              <Link href="/books" className="text-gray-600 hover:text-green-700">Books</Link>
+              <Link href="/gallery" className="text-gray-600 hover:text-green-700">Gallery</Link>
+              <Link href="/donate" className="text-gray-600 hover:text-green-700">Donate</Link>
+              <Link href="/contact" className="text-gray-600 hover:text-green-700">Contact</Link>
             </nav>
             <div className="flex items-center space-x-4">
               {user && (
                 <>
                   <Avatar><AvatarImage src={user.avatar} alt={user.name} /><AvatarFallback>{user.name?.split(" ").map((n: string) => n[0]).join("")}</AvatarFallback></Avatar>
                   <span className="hidden md:block text-sm font-medium">{user.name}</span>
-
                   <Button variant="ghost" size="sm" onClick={handleLogout}><LogOut className="h-4 w-4" /></Button>
                 </>
               )}
@@ -362,6 +401,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </header>
+
       <section className="bg-gradient-to-r from-green-600 to-green-800 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
@@ -395,7 +435,7 @@ export default function DashboardPage() {
                   <div><Link href="/" className="flex items-center space-x-2"><div className="w-10 h-10 bg-green-0 rounded-lg flex items-center justify-center"><img src="/images/kasomelogo.svg" alt="Kasome Logo" /></div><span className="text-2xl font-bold text-white">Kasome</span></Link><p className="text-gray-400 mt-4">Empowering students across Tanzania with quality online education.</p></div>
                   <div><h3 className="text-lg font-semibold mb-4">Courses</h3><ul className="space-y-2 text-gray-400"><li><Link href="/">Mathematics</Link></li><li><Link href="/courses/science">Science</Link></li><li><Link href="/">Languages</Link></li><li><Link href="/">Technology</Link></li></ul></div>
                   <div><h3 className="text-lg font-semibold mb-4">Support</h3><ul className="space-y-2 text-gray-400"><li><Link href="/contact">Help Center</Link></li><li><Link href="/contact">Contact Us</Link></li><li><Link href="/">FAQ</Link></li><li><Link href="/">Community</Link></li></ul></div>
-                  <div><h3 className="text-lg font-semibold mb-4">Company</h3><ul className="space-y-2 text-gray-400"><li><Link href="/about">About Us</Link></li><li><Link href="/">Careers</Link></li><li><Link href="/privacy">Privacy Policy</Link></li><li><Link href="/">Terms of Service</Link></li></ul></div>
+                  <div><h3 className="text-lg font-semibold mb-4">Company</h3><ul className="space-y-2 text-gray-400"><li><Link href="/about">About Us</Link></li><li><Link href="/">Careers</Link></li><li><Link href="/">Privacy Policy</Link></li><li><Link href="/">Terms of Service</Link></li></ul></div>
                 </div>
                 <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400"><p>&copy; {new Date().getFullYear()} Kasome. All rights reserved.</p></div>
               </div>

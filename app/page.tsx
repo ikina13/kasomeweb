@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { BookOpen, ShoppingCart,Heart,Users, Award, TrendingUp, Star, ArrowRight, Globe, Clock, Briefcase, Lightbulb, PieChart, PlaySquare, BookCopy, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { BookOpen, ShoppingCart,Heart,Users, Award,ImageIcon,Info, Mail, LayoutGrid, User, TrendingUp, Star, ArrowRight, Globe, Clock, Briefcase, Lightbulb, PieChart, PlaySquare, BookCopy, X, ChevronLeft, ChevronRight } from "lucide-react";
 import Logo from "@/components/Logo";
 import CoursesGrid from "@/components/CoursesGrid";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -242,10 +242,15 @@ interface UserData { name: string; email: string; phone: string; photo_url?: str
 export default function HomePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // New state for sidebar
   const coursesSectionRef = useRef<HTMLElement>(null);
 
   const handleScrollToCourses = () => {
     coursesSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
   useEffect(() => {
@@ -270,11 +275,41 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Mobile Sidebar */}
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+          <div className="p-4 flex items-center justify-between border-b">
+              <Logo />
+              <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+                  <X className="h-6 w-6" />
+              </Button>
+          </div>
+          <div className="flex flex-col p-4 space-y-2">
+              <Link href="/about" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={toggleSidebar}> <Info className="h-5 w-5" />About us</Link>
+              <Link href="/dashboard" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={toggleSidebar}><LayoutGrid className="h-5 w-5" />Dashboard</Link>
+              <Link href="/about" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={toggleSidebar}><User className="h-5 w-5" />About us</Link>
+              <Link href="/books" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={toggleSidebar}><BookOpen className="h-5 w-5" />Books</Link>
+              <Link href="/gallery" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={toggleSidebar}><ImageIcon className="h-5 w-5" />Gallery</Link>
+              <Link href="/donate" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={toggleSidebar}><Heart className="h-5 w-5" />Donate</Link>
+              <Link href="/contact" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={toggleSidebar}><Mail className="h-5 w-5" />Contact</Link>
+          </div>
+            
+      </div>
+
+      {/* Overlay to close sidebar when clicking outside */}
+      {isSidebarOpen && <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={toggleSidebar} />}
+
       {/* Navigation */}
       <nav className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
+            {/* Mobile menu button */}
+            <Button variant="ghost" size="icon" onClick={toggleSidebar} className="md:hidden">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </Button>
             <Logo />
+            {/* Navigation Links for Desktop */}
             <div className="hidden md:flex items-center space-x-8">
               <Link href="/about" className="text-gray-600 hover:text-gray-900">About us</Link>
                <Link href="/books" className="text-gray-600 hover:text-gray-900">

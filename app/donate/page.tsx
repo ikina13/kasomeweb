@@ -24,6 +24,13 @@ import {
   Target,
   Globe,
   GraduationCap,
+  Menu,
+  X,
+  Home,
+  LayoutGrid,
+  User,
+  Image as ImageIcon,
+  Mail,
 } from "lucide-react"
 import Logo from "@/components/Logo"
 import { useToast } from "@/hooks/use-toast"
@@ -113,6 +120,10 @@ export default function DonatePage() {
   const [paymentMethod, setPaymentMethod] = useState("mobile")
   const [showCustomDonation, setShowCustomDonation] = useState(false)
   const { toast } = useToast()
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen)
+  const handleSidebarClick = () => { setIsSidebarOpen(false) }
 
   const handlePurchase = () => {
     let amount = ""
@@ -149,28 +160,108 @@ export default function DonatePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Mobile Sidebar */}
+      <div
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out md:hidden ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="p-4 flex items-center justify-between border-b">
+          <Logo />
+          <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+            <X className="h-6 w-6" />
+          </Button>
+        </div>
+        <div className="flex flex-col p-4 space-y-2">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg"
+            onClick={handleSidebarClick}
+          >
+            <Home className="h-5 w-5" />
+            Home
+          </Link>
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg"
+            onClick={handleSidebarClick}
+          >
+            <LayoutGrid className="h-5 w-5" />
+            Dashboard
+          </Link>
+          <Link
+            href="/about"
+            className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg"
+            onClick={handleSidebarClick}
+          >
+            <User className="h-5 w-5" />
+            About Us
+          </Link>
+          <Link
+            href="/books"
+            className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg"
+            onClick={handleSidebarClick}
+          >
+            <BookOpen className="h-5 w-5" />
+            Books
+          </Link>
+          <Link
+            href="/gallery"
+            className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg"
+            onClick={handleSidebarClick}
+          >
+            <ImageIcon className="h-5 w-5" />
+            Gallery
+          </Link>
+          <Link
+            href="/donate"
+            className="flex items-center gap-2 text-green-700 font-semibold bg-green-50 px-4 py-2 rounded-lg"
+            onClick={handleSidebarClick}
+          >
+            <Heart className="h-5 w-5" />
+            Donate
+          </Link>
+          <Link
+            href="/contact"
+            className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg"
+            onClick={handleSidebarClick}
+          >
+            <Mail className="h-5 w-5" />
+            Contact
+          </Link>
+        </div>
+      </div>
+
+      {/* Overlay to close sidebar when clicking outside */}
+      {isSidebarOpen && <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={toggleSidebar} />}
+
       {/* Navigation */}
          <nav className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Logo />
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" size="icon" onClick={toggleSidebar} className="md:hidden">
+                <Menu className="h-6 w-6" />
+              </Button>
+              <Logo />
+            </div>
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="/" className="text-gray-700 hover:text-yellow-600 font-medium">
+              <Link href="/" className="text-gray-700 hover:text-green-600 font-medium">
                 Home
               </Link> 
-              <Link href="/about" className="text-gray-700 hover:text-yellow-600 font-medium">
+              <Link href="/about" className="text-gray-700 hover:text-green-600 font-medium">
                 About us
               </Link>
-              <Link href="/books" className="text-gray-700 hover:text-yellow-600 font-medium">
+              <Link href="/books" className="text-gray-700 hover:text-green-600 font-medium">
                 Books
               </Link>
-              <Link href="/gallery" className="text-gray-700 hover:text-yellow-600 font-medium">
+              <Link href="/gallery" className="text-gray-700 hover:text-green-600 font-medium">
                 Gallery
               </Link>
-                <Link href="/donate" className="text-yellow-700">
+                <Link href="/donate" className="text-green-700 font-medium border-b-2 border-green-700">
                 Donate
               </Link>
-              <Link href="/contact" className="text-gray-700 hover:text-yellow-600 font-medium">
+              <Link href="/contact" className="text-gray-700 hover:text-green-600 font-medium">
                 Contact
               </Link>       
             </div>

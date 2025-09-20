@@ -9,7 +9,22 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Star, Search, Filter, ShoppingBag, ArrowLeft, BookOpen } from "lucide-react"
+import {
+  Star,
+  Search,
+  Filter,
+  ShoppingBag,
+  ArrowLeft,
+  BookOpen,
+  Menu,
+  X,
+  Home,
+  LayoutGrid,
+  User,
+  Image as ImageIcon,
+  Heart,
+  Mail,
+} from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Logo from "@/components/Logo"
 
@@ -188,6 +203,10 @@ export default function BooksPage() {
   const [selectedLevel, setSelectedLevel] = useState("all")
   const [sortBy, setSortBy] = useState("popular")
   const [activeTab, setActiveTab] = useState("all")
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const handleSidebarClick = () => { setIsSidebarOpen(false); }
 
   const getFilteredBooks = (language: string) => {
     let books = language === "all" ? allBooks : allBooks.filter((book) => book.language === language)
@@ -274,28 +293,56 @@ export default function BooksPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Mobile Sidebar */}
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out md:hidden ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+          <div className="p-4 flex items-center justify-between border-b">
+              <Logo />
+              <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+                  <X className="h-6 w-6" />
+              </Button>
+          </div>
+          <div className="flex flex-col p-4 space-y-2">
+              <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={handleSidebarClick}><Home className="h-5 w-5" />Home</Link>
+              <Link href="/dashboard" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={handleSidebarClick}><LayoutGrid className="h-5 w-5" />Dashboard</Link>
+              <Link href="/about" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={handleSidebarClick}><User className="h-5 w-5" />About us</Link>
+              <Link href="/books" className="flex items-center gap-2 text-green-700 font-semibold bg-green-50 px-4 py-2 rounded-lg" onClick={handleSidebarClick}><BookOpen className="h-5 w-5" />Books</Link>
+              <Link href="/gallery" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={handleSidebarClick}><ImageIcon className="h-5 w-5" />Gallery</Link>
+              <Link href="/donate" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={handleSidebarClick}><Heart className="h-5 w-5" />Donate</Link>
+              <Link href="/contact" className="flex items-center gap-2 text-gray-600 hover:text-green-700 px-4 py-2 rounded-lg" onClick={handleSidebarClick}><Mail className="h-5 w-5" />Contact</Link>
+          </div>
+      </div>
+
+      {/* Overlay to close sidebar when clicking outside */}
+      {isSidebarOpen && <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={toggleSidebar} />}
+
+
       {/* Navigation */}
       <nav className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Logo />
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" size="icon" onClick={toggleSidebar} className="md:hidden">
+                <Menu className="h-6 w-6" />
+              </Button>
+              <Logo />
+            </div>
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="/" className="text-gray-700 hover:text-yellow-600 font-medium">
+              <Link href="/" className="text-gray-700 hover:text-green-600 font-medium">
                 Home
               </Link> 
-              <Link href="/about" className="text-gray-700 hover:text-yellow-600 font-medium">
+              <Link href="/about" className="text-gray-700 hover:text-green-600 font-medium">
                 About us
               </Link>
-              <Link href="/books" className="text-yellow-600 font-medium">
+              <Link href="/books" className="text-green-600 font-medium border-b-2 border-green-600">
                 Books
               </Link>
-              <Link href="/gallery" className="text-gray-700 hover:text-yellow-600 font-medium">
+              <Link href="/gallery" className="text-gray-700 hover:text-green-600 font-medium">
                 Gallery
               </Link>
-                <Link href="/donate" className="text-gray-700 hover:text-yellow-600 font-medium">
+                <Link href="/donate" className="text-gray-700 hover:text-green-600 font-medium">
                 Donate
               </Link>
-              <Link href="/contact" className="text-gray-700 hover:text-yellow-600 font-medium">
+              <Link href="/contact" className="text-gray-700 hover:text-green-600 font-medium">
                 Contact
               </Link>       
             </div>
@@ -444,7 +491,7 @@ export default function BooksPage() {
                   <div><Link href="/" className="flex items-center space-x-2"><div className="w-10 h-10 bg-green-0 rounded-lg flex items-center justify-center"><img src="/images/kasomelogo.svg" alt="Kasome Logo" /></div><span className="text-2xl font-bold text-white">Kasome</span></Link><p className="text-gray-400 mt-4">Empowering students across Tanzania with quality online education.</p></div>
                   <div><h3 className="text-lg font-semibold mb-4">Courses</h3><ul className="space-y-2 text-gray-400"><li><Link href="/">Mathematics</Link></li><li><Link href="/courses/science">Science</Link></li><li><Link href="/">Languages</Link></li><li><Link href="/">Technology</Link></li></ul></div>
                   <div><h3 className="text-lg font-semibold mb-4">Support</h3><ul className="space-y-2 text-gray-400"><li><Link href="/contact">Help Center</Link></li><li><Link href="/contact">Contact Us</Link></li><li><Link href="/">FAQ</Link></li><li><Link href="/">Community</Link></li></ul></div>
-                  <div><h3 className="text-lg font-semibold mb-4">Company</h3><ul className="space-y-2 text-gray-400"><li><Link href="/about">About Us</Link></li><li><Link href="/">Careers</Link></li><li><Link href="/privacy">Privacy Policy</Link></li><li><Link href="/">Terms of Service</Link></li></ul></div>
+                  <div><h3 className="text-lg font-semibold mb-4">Company</h3><ul className="space-y-2 text-gray-400"><li><Link href="/about">About Us</Link></li><li><Link href="/">Careers</Link></li><li><Link href="/">Privacy Policy</Link></li><li><Link href="/">Terms of Service</Link></li></ul></div>
                 </div>
                 <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400"><p>&copy; {new Date().getFullYear()} Kasome. All rights reserved.</p></div>
               </div>
