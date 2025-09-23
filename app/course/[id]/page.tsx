@@ -131,7 +131,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
 
       // MODIFIED: This function now updates the course data directly
       const fetchSubscriptionStatus = async (authToken: string) => {
-        const response = await fetch(`http://45.79.205.240/api/users/subscription`, {
+        const response = await fetch(`https://45.79.205.240/api/users/subscription`, {
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
         if (!response.ok) {
