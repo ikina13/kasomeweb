@@ -48,8 +48,8 @@ interface ApiResponse<T> { status: string; message: string; data: T; }
 const classCategories = [
   { label: "I", id: 1 }, { label: "II", id: 2 }, { label: "III", id: 3 },
   { label: "IV", id: 4 }, { label: "V", id: 5 }, { label: "VI", id: 6 },
-  { label: "Swahili Course", id: 9, className: "col-span-3 md:col-span-1" },
-  { label: "English Course", id: 7, className: "col-span-3 md:col-span-1" },
+  { label: "Swahili Courses For Foreigners", id: 9, className: "col-span-3 md:col-span-1" },
+  { label: "English Courses", id: 7, className: "col-span-3 md:col-span-1" },
   { label: "How to pay", id: 8, className: "col-span-3 md:col-span-1" },
 ]
 
